@@ -1,25 +1,152 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <!--Game Data View Controller-->
+        <scene sceneID="SN4-vd-2tn">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController restorationIdentifier="gameViewRID" storyboardIdentifier="gameViewSID" id="elU-g2-UlE" customClass="GameDataViewController" customModule="Scoresheet" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                        <viewControllerLayoutGuide type="top" id="4wg-tf-5jA"/>
+                        <viewControllerLayoutGuide type="bottom" id="o5P-qb-ECl"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <view key="view" contentMode="scaleToFill" id="mWw-O6-XaO">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Your Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hnE-5o-9lT">
+                                <rect key="frame" x="118" y="20" width="84" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.94764397909999998" green="0.021391326070000001" blue="0.031692169440000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zml-01-sFI">
+                                <rect key="frame" x="20" y="44" width="285" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="elU-g2-UlE" id="a11-nb-2Oa"/>
+                                </connections>
+                            </textField>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="clubPickerView" translatesAutoresizingMaskIntoConstraints="NO" id="R8W-sE-GHC">
+                                <rect key="frame" x="0.0" y="110" width="320" height="120"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="elU-g2-UlE" id="9ux-aZ-mWu"/>
+                                    <outlet property="delegate" destination="elU-g2-UlE" id="kNd-Nh-eAJ"/>
+                                </connections>
+                            </pickerView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Select your club" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bF8-Qz-aId">
+                                <rect key="frame" x="71" y="82" width="179" height="20"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.94764397909999998" green="0.1054501454" blue="0.028076481090000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Select your team" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U5W-e0-SSp">
+                                <rect key="frame" x="66" y="240" width="188" height="20"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.94764397909999998" green="0.1054501454" blue="0.028076481090000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="teamPickerView" translatesAutoresizingMaskIntoConstraints="NO" id="Fmk-oy-bkX">
+                                <rect key="frame" x="3" y="268" width="320" height="110"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="elU-g2-UlE" id="Q2g-BZ-NXK"/>
+                                    <outlet property="delegate" destination="elU-g2-UlE" id="fqJ-Pg-MA0"/>
+                                </connections>
+                            </pickerView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="doneButton" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cvv-wK-ftY">
+                                <rect key="frame" x="0.0" y="391" width="320" height="89"/>
+                                <color key="backgroundColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="0.53793103450000002" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Done"/>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="clubLabel" destination="bF8-Qz-aId" id="9UX-F7-ZfZ"/>
+                        <outlet property="clubPicker" destination="R8W-sE-GHC" id="X8O-kY-zjw"/>
+                        <outlet property="doneButton" destination="Cvv-wK-ftY" id="pXG-4v-WRG"/>
+                        <outlet property="nameLabel" destination="hnE-5o-9lT" id="25Y-0e-7Xu"/>
+                        <outlet property="nameTF" destination="zml-01-sFI" id="zYJ-EW-M5c"/>
+                        <outlet property="teamLabel" destination="U5W-e0-SSp" id="ZnR-bg-ztZ"/>
+                        <outlet property="teamPicker" destination="Fmk-oy-bkX" id="y8q-pj-bBd"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2qR-5h-ES9" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="242" y="83"/>
+        </scene>
+        <!--Game Id View Controller-->
+        <scene sceneID="95y-r6-ehG">
+            <objects>
+                <viewController restorationIdentifier="GameIdViewController" storyboardIdentifier="GameIdViewController" id="muf-Mn-niO" customClass="GameIdViewController" customModule="Scoresheet" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="7Rd-cq-VtB"/>
+                        <viewControllerLayoutGuide type="bottom" id="cRi-Rw-Qdz"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fSy-jX-vG9">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="NORCAL Game ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YTf-NN-m7G">
+                                <rect key="frame" x="91" y="103" width="138" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dyN-QL-02j">
+                                <rect key="frame" x="0.0" y="391" width="320" height="89"/>
+                                <color key="backgroundColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="0.53793103450000002" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Take Picture">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2l8-wJ-ZaW">
+                                <rect key="frame" x="47" y="152" width="227" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="muf-Mn-niO" id="eej-wY-hEa"/>
+                                </connections>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="cameraButton" destination="dyN-QL-02j" id="e5y-cu-7uo"/>
+                        <outlet property="idTF" destination="2l8-wJ-ZaW" id="sYj-PQ-ODP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kT5-S9-t6R" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="784" y="83"/>
+        </scene>
+        <!--Camera View Controller-->
+        <scene sceneID="lPT-lL-vio">
+            <objects>
+                <viewController restorationIdentifier="cameraViewRID" storyboardIdentifier="cameraViewSID" id="Av4-ih-o5N" customClass="CameraViewController" customModule="Scoresheet" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nj7-yl-zhu"/>
+                        <viewControllerLayoutGuide type="bottom" id="6d7-eW-La3"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1gm-oz-SO1">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iey-mQ-cQW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="242" y="885"/>
         </scene>
     </scenes>
 </document>
