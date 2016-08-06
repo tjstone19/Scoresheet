@@ -74,17 +74,26 @@ UITextViewDelegate {
         super.viewDidLoad()
         
         self.setUpUI()
-        
     }
     
     // Initializes any UI objects in the view.
     func setUpUI() {
+        let gameData: GameData = fetchGameData()
+        
         nameTF.addTarget(self, action: #selector(self.textFieldDidChange(_:)),
                          forControlEvents: UIControlEvents.EditingChanged)
         
         doneButton.addGestureRecognizer(
             UITapGestureRecognizer(target: self,
                 action:#selector(GameDataViewController.segueToGameIdView(_:))))
+        
+        self.nameTF.text = gameData.userName
+        
+        self.clubPicker.selectRow(self.clubs.indexOf(gameData.clubName!)!,
+                                  inComponent: 0, animated: true)
+        
+        self.teamPicker.selectRow(self.teams.indexOf(gameData.teamDivision!)!,
+                                  inComponent: 0, animated: true)
     }
     
     // Disables key board for user name text field
@@ -113,7 +122,7 @@ UITextViewDelegate {
             try fetchResults =
                 (managedObjectContext.executeFetchRequest(fetchRequest)
                     as? [GameData])!
-            print(fetchResults)
+            //print(fetchResults)
         } catch {
             print("ERROR: Unable to access core data in GameIDViewController")
         }

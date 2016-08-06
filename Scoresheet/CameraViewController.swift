@@ -20,9 +20,26 @@ class CameraViewController: UIViewController {
     // back camera
     var backCamera : AVCaptureDevice?
     
+    // Retakes a picture when pressed
+    @IBOutlet weak var retakeButton: UIButton!
+    
+    // Sends the picture to the server when pressed
+    @IBOutlet weak var okButton: UIButton!
+    
+    // Transitions to GameIdViewController when pressed
+    @IBOutlet weak var backButton: UIButton!
+    
+    // Picture taken by the user
+    var image: UIImage = UIImage()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.setUpUI()
+        self.setUpCaptureSession()
+    }
+    
+    // Sets up the AVCaptureSession to take the picture.
+    func setUpCaptureSession() {
         // Do any additional setup after loading the view, typically from a nib.
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
         
@@ -44,6 +61,55 @@ class CameraViewController: UIViewController {
         }
     }
     
+    // Initializes UI Objects
+    func setUpUI() {
+        // Add tap gesture recognizers to each button
+        backButton.addGestureRecognizer(
+            UITapGestureRecognizer(target: self,
+                action:#selector(CameraViewController.backButtonPressed(_:))))
+        
+        retakeButton.addGestureRecognizer(
+            UITapGestureRecognizer(target: self,
+                action:#selector(CameraViewController.retakeButtonPressed(_:))))
+        
+        okButton.addGestureRecognizer(
+            UITapGestureRecognizer(target: self,
+                action:#selector(CameraViewController.okButtonPressed(_:))))
+        
+        toggleButtonVisibility()
+    }
+    
+    // Toggles back button and ok button visibility
+    func toggleButtonVisibility() {
+        backButton.hidden = !backButton.hidden
+        backButton.enabled = !backButton.enabled
+        okButton.hidden = !okButton.hidden
+        okButton.hidden = !okButton.enabled
+    }
+    
+    // Sends the photo to the server.
+    func okButtonPressed(sender: UITapGestureRecognizer) {
+        // TODO: Send photo to server
+    }
+    
+    // Reinitializes the capture session to take another picture
+    func retakeButtonPressed(sender: UITapGestureRecognizer) {
+        self.beginSession()
+    }
+    
+    // Called when the back button is pressed.
+    // Transitions back to the game id view controller.
+    func backButtonPressed(sender: UITapGestureRecognizer) {
+    
+        // Transition to GameIdViewController
+        let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
+        let vc = storyboard.instantiateViewControllerWithIdentifier(
+            "GameIdViewController") as! GameIdViewController
+        self.presentViewController(vc, animated: true, completion: nil)
+    }
+
+    
+    
     // Sets the back cameras focus mode to "Locked"
     func configureDevice() {
         do {
@@ -55,7 +121,6 @@ class CameraViewController: UIViewController {
             print(error)
         }
     }
-    
     
     func beginSession() {
         configureDevice()
@@ -80,33 +145,42 @@ class CameraViewController: UIViewController {
             previewLayer.position = CGPointMake(view.bounds.midX, view.bounds.midY)
             previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
             
-            let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, view.bounds.size.width, view.bounds.size.height))
+            let cameraPreview = UIView(
+                frame: CGRectMake(0.0, 0.0, view.bounds.size.width,
+                    view.bounds.size.height))
+            
             cameraPreview.layer.addSublayer(previewLayer)
-            cameraPreview.addGestureRecognizer(UITapGestureRecognizer(target: self, action:#selector(CameraViewController.saveToCamera(_:))))
+            
+            cameraPreview.addGestureRecognizer(
+                UITapGestureRecognizer(target: self,
+                    action:#selector(CameraViewController.showPhoto(_:))))
+            
+            // Add back button to the camera preview layer
+            cameraPreview.addSubview(backButton)
             
             view.addSubview(cameraPreview)
         }
         
     }
     
-    func saveToCamera(sender: UITapGestureRecognizer) {
+    // Presents the picture to the user
+    func showPhoto(sender: UITapGestureRecognizer) {
         if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
                 (imageDataSampleBuffer, error) -> Void in
-                let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
+                let imageData =
+                    AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
                 
-                
-                //UIImageWriteToSavedPhotosAlbum(UIImage(data: imageData)!, nil, nil, nil)
-                
-                
-                //let picView: UIImageView = UIImageView(image: UIImage(data: imageData))
-                //picView.bounds = self.view.bounds
-                
-                let image = UIImage(data: imageData)
-                let imageView = UIImageView(image: image!)
+                self.image = UIImage(data: imageData)!
+                let imageView = UIImageView(image: self.image)
                 imageView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width,
                                          height: self.view.bounds.size.height)
+                
+                imageView.addSubview(self.okButton)
+                imageView.addSubview(self.retakeButton)
                 self.view.addSubview(imageView)
+                
+                self.toggleButtonVisibility()
             }
         }
     }

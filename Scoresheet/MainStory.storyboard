@@ -8,7 +8,7 @@
         <!--Game Data View Controller-->
         <scene sceneID="h7Q-2a-7b3">
             <objects>
-                <viewController restorationIdentifier="gameViewRID" storyboardIdentifier="gameViewSID" id="i8z-5A-DgY" customClass="GameDataViewController" customModule="Scoresheet" sceneMemberID="viewController">
+                <viewController restorationIdentifier="GameDataViewController" storyboardIdentifier="GameDataViewController" id="i8z-5A-DgY" customClass="GameDataViewController" customModule="Scoresheet" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="wpG-5c-GDy"/>
                         <viewControllerLayoutGuide type="bottom" id="mWC-Va-3YZ"/>
@@ -126,6 +126,7 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="backButton" destination="Pe9-5d-sUN" id="qi4-uj-hSq"/>
                         <outlet property="cameraButton" destination="gT3-aU-UdI" id="ivX-kx-pvJ"/>
                         <outlet property="idTF" destination="Kmj-bO-N6w" id="eUb-ym-ajk"/>
                     </connections>
@@ -137,7 +138,7 @@
         <!--Camera View Controller-->
         <scene sceneID="EhR-aX-fLk">
             <objects>
-                <viewController restorationIdentifier="cameraViewRID" storyboardIdentifier="cameraViewSID" id="tuE-Y0-tDy" customClass="CameraViewController" customModule="Scoresheet" sceneMemberID="viewController">
+                <viewController restorationIdentifier="CameraViewController" storyboardIdentifier="CameraViewController" id="tuE-Y0-tDy" customClass="CameraViewController" customModule="Scoresheet" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="avC-O9-YNE"/>
                         <viewControllerLayoutGuide type="bottom" id="yoT-Nw-aRS"/>
@@ -145,9 +146,31 @@
                     <view key="view" contentMode="scaleToFill" id="8o8-Lp-IJR">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ws8-aM-SUo">
+                                <rect key="frame" x="20" y="401" width="95" height="59"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Retake"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ojN-rA-FxZ">
+                                <rect key="frame" x="205" y="401" width="95" height="59"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Okay"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kS8-Qh-FSh">
+                                <rect key="frame" x="20" y="20" width="95" height="81"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Back"/>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="backButton" destination="kS8-Qh-FSh" id="PRF-Bm-dTU"/>
+                        <outlet property="okButton" destination="ojN-rA-FxZ" id="SsB-hF-ReO"/>
+                        <outlet property="retakeButton" destination="ws8-aM-SUo" id="ap3-y3-xiZ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="csz-ht-NqR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

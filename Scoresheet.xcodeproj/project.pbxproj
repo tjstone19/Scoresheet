@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C239536F1D4E9B3200BE0D49 /* MainStory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C239536E1D4E9B3200BE0D49 /* MainStory.storyboard */; };
+		C24C01BF1D51B4AD000DB58B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24C01BE1D51B4AD000DB58B /* Constants.swift */; };
 		C2AFFD461D4B255C007D5A35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AFFD451D4B255C007D5A35 /* AppDelegate.swift */; };
 		C2AFFD481D4B255C007D5A35 /* GameDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AFFD471D4B255C007D5A35 /* GameDataViewController.swift */; };
 		C2AFFD4B1D4B255C007D5A35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2AFFD491D4B255C007D5A35 /* Main.storyboard */; };
@@ -41,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		C239536E1D4E9B3200BE0D49 /* MainStory.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainStory.storyboard; sourceTree = "<group>"; };
+		C24C01BE1D51B4AD000DB58B /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		C2AFFD421D4B255C007D5A35 /* Scoresheet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scoresheet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2AFFD451D4B255C007D5A35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C2AFFD471D4B255C007D5A35 /* GameDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDataViewController.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				C2AFFD7A1D4B2694007D5A35 /* GameIdViewController.swift */,
 				C2AFFD7C1D4B26E4007D5A35 /* CameraViewController.swift */,
 				C239536E1D4E9B3200BE0D49 /* MainStory.storyboard */,
+				C24C01BE1D51B4AD000DB58B /* Constants.swift */,
 			);
 			path = Scoresheet;
 			sourceTree = "<group>";
@@ -282,6 +285,7 @@
 				C2AFFD7D1D4B26E4007D5A35 /* CameraViewController.swift in Sources */,
 				C2AFFD461D4B255C007D5A35 /* AppDelegate.swift in Sources */,
 				C2AFFD4E1D4B255C007D5A35 /* Scoresheet.xcdatamodeld in Sources */,
+				C24C01BF1D51B4AD000DB58B /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

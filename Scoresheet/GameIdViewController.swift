@@ -18,14 +18,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     // Transitions to the CameraView when a touch gesture is detected
     @IBOutlet weak var cameraButton: UIButton!
     
-    // Name label
-    @IBOutlet weak var nameL: UILabel!
-    
-    // Club label
-    @IBOutlet weak var clubL: UILabel!
-    
-    // Team label
-    @IBOutlet weak var teamL: UILabel!
+    @IBOutlet weak var backButton: UIButton!
     
     // Used to access core data
     let managedObjectContext =
@@ -37,6 +30,9 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     
     // Contains the game data in core data
     var gameData: GameData!
+    
+    // Contains constant values for application
+    var constants: Constants = Constants()
 
     
     override func viewDidLoad() {
@@ -56,26 +52,43 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
             try fetchResults =
                 (managedObjectContext.executeFetchRequest(fetchRequest)
                     as? [GameData])!
-            print(fetchResults)
+            //print(fetchResults)
         } catch {
             print("ERROR: Unable to access core data in GameIDViewController")
         }
         
         return fetchResults[0]
     }
+    
+    // Saves the user's name, club name, and team division to core data.
+    func saveData() {
+        let gameData: GameData = fetchGameData()
+        
+        // Only one component in team picker so user component 0
+        gameData.setValue(self.idTF.text, forKey: "gameId")
+        
+        // Save GameData fields
+        do {
+            try gameData.managedObjectContext?.save()
+        } catch {
+            print(error)
+        }
+    }
 
     // Initializes UI Objects
     func setUpUI() {
-        self.nameL.text = gameData.valueForKey("userName") as? String
-        self.clubL.text = gameData.valueForKey("clubName") as? String
-        self.teamL.text = gameData.valueForKey("teamDivision") as? String
-        
         idTF.addTarget(self, action: #selector(self.textFieldDidChange(_:)),
                        forControlEvents: UIControlEvents.EditingChanged)
         
         cameraButton.addGestureRecognizer(
             UITapGestureRecognizer(target: self,
             action:#selector(GameIdViewController.takePicture(_:))))
+        
+        backButton.addGestureRecognizer(
+            UITapGestureRecognizer(target: self,
+                action:#selector(GameIdViewController.backButtonPressed(_:))))
+        
+        idTF.text = gameData.gameId
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -89,12 +102,27 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     
     // Determines if the user typed in characters for the game ID.
     func textFieldDidChange(textField: UITextField) {
+        
         // Check for text in name field
-        if idTF.text?.characters.count >= 8 {
+        if idTF.text?.characters.count == 8 {
             cameraButton.enabled = true
             cameraButton.tintColor = UIColor.blueColor()
             cameraButton.backgroundColor = UIColor.lightGrayColor()
+            
+            self.saveData()
         }
+    }
+    
+    // Called when the back button is pressed.
+    // Transitions back to the game data view controller.
+    func backButtonPressed(sender: UITapGestureRecognizer) {
+        self.saveData()
+        
+        // Transition to GameIdViewController
+        let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
+        let vc = storyboard.instantiateViewControllerWithIdentifier(
+            "GameDataViewController") as! GameDataViewController
+        self.presentViewController(vc, animated: true, completion: nil)
     }
     
     // Called when the pictureButton is pressed.
@@ -102,13 +130,16 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     func takePicture(sender: UITapGestureRecognizer) {
         
         // Check that user entered text in game id text field
-        if  idTF.text?.characters.count > 0 {
+        if  idTF.text?.characters.count == self.constants.GAME_ID_LENGTH {
             
-            // TODO: Save Game ID to core data
+            // Save Game ID to core data
+            self.saveData()
             
             // Transition to CameraViewController
-            let cameraVC:CameraViewController = CameraViewController()
-            self.presentViewController(cameraVC, animated: true, completion: nil)
+            let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
+            let vc = storyboard.instantiateViewControllerWithIdentifier(
+                "CameraViewController") as! CameraViewController
+            self.presentViewController(vc, animated: true, completion: nil)
             
         }
     }
