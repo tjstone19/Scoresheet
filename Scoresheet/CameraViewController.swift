@@ -32,6 +32,12 @@ class CameraViewController: UIViewController {
     // Picture taken by the user
     var image: UIImage = UIImage()
     
+    // Displays what the back camera "sees"
+    var cameraPreview = UIView()
+    
+    // Calls show photo method when a tap is detected
+    var pictureGesture: UITapGestureRecognizer = UITapGestureRecognizer()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -76,6 +82,10 @@ class CameraViewController: UIViewController {
             UITapGestureRecognizer(target: self,
                 action:#selector(CameraViewController.okButtonPressed(_:))))
         
+        self.pictureGesture =
+            UITapGestureRecognizer(target: self,
+                                   action:#selector(CameraViewController.showPhoto(_:)))
+        
         toggleButtonVisibility()
     }
     
@@ -84,7 +94,7 @@ class CameraViewController: UIViewController {
         backButton.hidden = !backButton.hidden
         backButton.enabled = !backButton.enabled
         okButton.hidden = !okButton.hidden
-        okButton.hidden = !okButton.enabled
+        okButton.enabled = !okButton.enabled
     }
     
     // Sends the photo to the server.
@@ -92,9 +102,20 @@ class CameraViewController: UIViewController {
         // TODO: Send photo to server
     }
     
+    // Removes input sources to captureSession
+    func clearAVCaptureDeviceInputs() {
+        if let inputs = captureSession.inputs as? [AVCaptureDeviceInput] {
+            for input in inputs {
+                captureSession.removeInput(input)
+            }
+        }
+    }
+    
     // Reinitializes the capture session to take another picture
     func retakeButtonPressed(sender: UITapGestureRecognizer) {
-        self.beginSession()
+        self.captureSession.stopRunning()
+        self.clearAVCaptureDeviceInputs()
+        self.viewDidLoad()
     }
     
     // Called when the back button is pressed.
@@ -114,8 +135,23 @@ class CameraViewController: UIViewController {
     func configureDevice() {
         do {
             let device = backCamera
+            
             try device!.lockForConfiguration()
-            device!.focusMode = .Locked
+            
+            //device!.focusMode = .Locked
+            device!.unlockForConfiguration()
+            
+            let focusMode:AVCaptureFocusMode =
+                AVCaptureFocusMode.ContinuousAutoFocus
+            
+            try device?.lockForConfiguration()
+            
+            if device!.isFocusModeSupported(focusMode) {
+                 // lock for configuration
+                device!.focusMode = focusMode
+                // unlock
+            }
+            
             device!.unlockForConfiguration()
         } catch {
             print(error)
@@ -145,26 +181,26 @@ class CameraViewController: UIViewController {
             previewLayer.position = CGPointMake(view.bounds.midX, view.bounds.midY)
             previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
             
-            let cameraPreview = UIView(
+            cameraPreview = UIView(
                 frame: CGRectMake(0.0, 0.0, view.bounds.size.width,
                     view.bounds.size.height))
             
             cameraPreview.layer.addSublayer(previewLayer)
             
-            cameraPreview.addGestureRecognizer(
-                UITapGestureRecognizer(target: self,
-                    action:#selector(CameraViewController.showPhoto(_:))))
+            cameraPreview.addGestureRecognizer(pictureGesture)
+            
+            view.addSubview(cameraPreview)
             
             // Add back button to the camera preview layer
             cameraPreview.addSubview(backButton)
-            
-            view.addSubview(cameraPreview)
         }
         
     }
     
     // Presents the picture to the user
     func showPhoto(sender: UITapGestureRecognizer) {
+        self.cameraPreview.removeGestureRecognizer(pictureGesture)
+        
         if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
                 (imageDataSampleBuffer, error) -> Void in
@@ -176,11 +212,22 @@ class CameraViewController: UIViewController {
                 imageView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width,
                                          height: self.view.bounds.size.height)
                 
+              
+                self.view.addSubview(imageView)
                 imageView.addSubview(self.okButton)
                 imageView.addSubview(self.retakeButton)
-                self.view.addSubview(imageView)
                 
-                self.toggleButtonVisibility()
+                self.backButton.hidden = !self.backButton.hidden
+                self.backButton.enabled = !self.backButton.enabled
+                self.okButton.hidden = !self.okButton.hidden
+                self.okButton.enabled = !self.okButton.enabled
+                
+                self.retakeButton.frame = CGRect(x: 20, y: 401,
+                                                 width: 120, height: 80)
+                self.okButton.frame = CGRect(x: 205, y: 401,
+                                             width: 120, height: 80)
+                
+                imageView.userInteractionEnabled = true
             }
         }
     }

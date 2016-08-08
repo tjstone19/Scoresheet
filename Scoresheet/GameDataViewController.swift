@@ -89,11 +89,22 @@ UITextViewDelegate {
         
         self.nameTF.text = gameData.userName
         
-        self.clubPicker.selectRow(self.clubs.indexOf(gameData.clubName!)!,
-                                  inComponent: 0, animated: true)
+        // Check for saved data
+        if (gameData.clubName == nil || gameData.clubName == "") {
+            self.clubPicker.selectRow(0, inComponent: 0, animated: true)
+        }
+        else {
+            self.clubPicker.selectRow(self.clubs.indexOf(gameData.clubName!)!,
+                                      inComponent: 0, animated: true)
+        }
         
-        self.teamPicker.selectRow(self.teams.indexOf(gameData.teamDivision!)!,
-                                  inComponent: 0, animated: true)
+        if (gameData.teamDivision == nil || gameData.teamDivision == "") {
+            self.teamPicker.selectRow(0, inComponent: 0, animated: true)
+        }
+        else {
+            self.teamPicker.selectRow(self.teams.indexOf(gameData.teamDivision!)!,
+                                      inComponent: 0, animated: true)
+        }
     }
     
     // Disables key board for user name text field
