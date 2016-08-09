@@ -132,6 +132,15 @@ class CameraViewController: UIViewController {
         okButton.enabled = !okButton.enabled
     }
     
+    // Initializes a GameDataViewController
+    func segueToHomeScreen() {
+        // Transition to GameIdViewController
+        let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
+        let vc = storyboard.instantiateViewControllerWithIdentifier(
+            "GameDataViewController") as! GameDataViewController
+        self.presentViewController(vc, animated: true, completion: nil)
+    }
+    
     // Sends the photo to the server.
     func okButtonPressed(sender: UITapGestureRecognizer) {
         // TODO: Send photo to server
@@ -142,6 +151,8 @@ class CameraViewController: UIViewController {
                                      game: gameData.gameId!)
         
         uploader.uploadImageToServer()
+        
+        self.segueToHomeScreen()
     }
     
     // Removes input sources to captureSession

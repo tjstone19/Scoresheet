@@ -9,10 +9,7 @@
 import UIKit
 
 class ImageUploader: NSObject {
-    let fileKey: String = "scoresheet_file"
-    let uploadURL: String = "http://stats.caha.timetoscore.com/submit-scoresheet.php"
     
-    // Parameters for the HTTP Request
     // Parameters for the HTTP Request
     var param = [
         "game_number"  : "",
@@ -35,6 +32,9 @@ class ImageUploader: NSObject {
     // NORCAL game ID
     var gameId: String
     
+    // Contains constant values for entire program
+    let constants: Constants = Constants()
+    
     // Initializes an ImageUploader object with the given parameters
     init(image: UIImage, name: String, club: String, team: String, game: String) {
         self.uploadPic = image
@@ -52,7 +52,7 @@ class ImageUploader: NSObject {
     
     func uploadImageToServer()
     {
-        let myUrl = NSURL(string: uploadURL)
+        let myUrl = NSURL(string: constants.UPLOAD_URL)
         
         // new HttpPostTask(this, Constants.NORCAL_SUBMIT_URL, file, gameNum,
         
@@ -70,7 +70,7 @@ class ImageUploader: NSObject {
         if(imageData==nil)  { return; }
         
         request.HTTPBody = createBodyWithParameters(param,
-                                                    filePathKey: fileKey,
+                                                    filePathKey: constants.FILE_KEY,
                                                     imageDataKey: imageData!,
                                                     boundary: boundary)
         
