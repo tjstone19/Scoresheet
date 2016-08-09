@@ -9,5 +9,6 @@
 import Foundation
 
 class Constants: NSObject {
-    let GAME_ID_LENGTH: Int = 8
+    let GAME_ID_LENGTH: Int = 6
+    
 }

@@ -104,7 +104,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     func textFieldDidChange(textField: UITextField) {
         
         // Check for text in name field
-        if idTF.text?.characters.count == 8 {
+        if idTF.text?.characters.count == self.constants.GAME_ID_LENGTH {
             cameraButton.enabled = true
             cameraButton.tintColor = UIColor.blueColor()
             cameraButton.backgroundColor = UIColor.lightGrayColor()

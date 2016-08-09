@@ -8,6 +8,7 @@
 //  Copyright © 2016 Trevor J. Stone. All rights reserved.
 //
 import UIKit
+import CoreData
 import AVFoundation
 
 class CameraViewController: UIViewController {
@@ -39,11 +40,44 @@ class CameraViewController: UIViewController {
     // Calls show photo method when a tap is detected
     var pictureGesture: UITapGestureRecognizer = UITapGestureRecognizer()
     
+    // Used to access core data
+    let managedObjectContext =
+        (UIApplication.sharedApplication().delegate
+            as! AppDelegate).managedObjectContext
+    
+    // Contains GameData Object stored in core data
+    var fetchResults: [GameData] = []
+    
+    // Contains the game data in core data
+    var gameData: GameData!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
         self.setUpCaptureSession()
+        
+        gameData = fetchGameData()
     }
+    
+    // Retrieves the users name, club, and team from core data.
+    func fetchGameData() -> GameData {
+        let fetchRequest = NSFetchRequest(entityName: "GameData")
+        
+        // Request access to GameData object from core data
+        do {
+            try fetchResults =
+                (managedObjectContext.executeFetchRequest(fetchRequest)
+                    as? [GameData])!
+            //print(fetchResults)
+        } catch {
+            print("ERROR: Unable to access core data in GameIDViewController")
+        }
+        
+        return fetchResults[0]
+    }
+    
+
+    
     
     // Sets up the AVCaptureSession to take the picture.
     func setUpCaptureSession() {
@@ -101,6 +135,13 @@ class CameraViewController: UIViewController {
     // Sends the photo to the server.
     func okButtonPressed(sender: UITapGestureRecognizer) {
         // TODO: Send photo to server
+        let uploader = ImageUploader(image: self.image,
+                                     name: gameData.userName!,
+                                     club: gameData.clubName!,
+                                     team: gameData.teamDivision!,
+                                     game: gameData.gameId!)
+        
+        uploader.uploadImageToServer()
     }
     
     // Removes input sources to captureSession
@@ -232,8 +273,5 @@ class CameraViewController: UIViewController {
             }
         }
     }
-    
-    
-    
 }
 
