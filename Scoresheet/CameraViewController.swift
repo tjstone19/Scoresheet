@@ -275,10 +275,10 @@ class CameraViewController: UIViewController {
                 self.okButton.hidden = !self.okButton.hidden
                 self.okButton.enabled = !self.okButton.enabled
                 
-                self.retakeButton.frame = CGRect(x: 20, y: 401,
-                                                 width: 120, height: 80)
-                self.okButton.frame = CGRect(x: 205, y: 401,
-                                             width: 120, height: 80)
+                //self.retakeButton.frame = CGRect(x: 20, y: 401,
+                  //                               width: 120, height: 80)
+                //self.okButton.frame = CGRect(x: 205, y: 401,
+                    //                         width: 120, height: 80)
                 
                 imageView.userInteractionEnabled = true
             }
