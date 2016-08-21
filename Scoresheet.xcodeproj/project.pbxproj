@@ -90,6 +90,48 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C26A1C501D694D7600EFA125 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				C2AFFD471D4B255C007D5A35 /* GameDataViewController.swift */,
+				C2AFFD7A1D4B2694007D5A35 /* GameIdViewController.swift */,
+				C2AFFD7C1D4B26E4007D5A35 /* CameraViewController.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		C26A1C511D694D9100EFA125 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				C2AFFD761D4B261E007D5A35 /* GameData+CoreDataProperties.swift */,
+				C2AFFD771D4B261E007D5A35 /* GameData.swift */,
+				C24C01BE1D51B4AD000DB58B /* Constants.swift */,
+				8FFEADCA1D5A5C530049FC3A /* ImageUploader.swift */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
+		C26A1C521D694DC500EFA125 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				C2AFFD491D4B255C007D5A35 /* Main.storyboard */,
+				C2AFFD511D4B255C007D5A35 /* LaunchScreen.storyboard */,
+				C239536E1D4E9B3200BE0D49 /* MainStory.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
+		C26A1C531D694DE600EFA125 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				C2AFFD451D4B255C007D5A35 /* AppDelegate.swift */,
+				C2AFFD4F1D4B255C007D5A35 /* Assets.xcassets */,
+				C2AFFD541D4B255C007D5A35 /* Info.plist */,
+				C2AFFD4C1D4B255C007D5A35 /* Scoresheet.xcdatamodeld */,
+			);
+			name = Application;
+			sourceTree = "<group>";
+		};
 		C2AFFD391D4B255C007D5A35 = {
 			isa = PBXGroup;
 			children = (
@@ -113,20 +155,10 @@
 		C2AFFD441D4B255C007D5A35 /* Scoresheet */ = {
 			isa = PBXGroup;
 			children = (
-				C2AFFD451D4B255C007D5A35 /* AppDelegate.swift */,
-				C2AFFD471D4B255C007D5A35 /* GameDataViewController.swift */,
-				C2AFFD491D4B255C007D5A35 /* Main.storyboard */,
-				C2AFFD4F1D4B255C007D5A35 /* Assets.xcassets */,
-				C2AFFD511D4B255C007D5A35 /* LaunchScreen.storyboard */,
-				C2AFFD541D4B255C007D5A35 /* Info.plist */,
-				C2AFFD4C1D4B255C007D5A35 /* Scoresheet.xcdatamodeld */,
-				C2AFFD761D4B261E007D5A35 /* GameData+CoreDataProperties.swift */,
-				C2AFFD771D4B261E007D5A35 /* GameData.swift */,
-				C2AFFD7A1D4B2694007D5A35 /* GameIdViewController.swift */,
-				C2AFFD7C1D4B26E4007D5A35 /* CameraViewController.swift */,
-				C239536E1D4E9B3200BE0D49 /* MainStory.storyboard */,
-				C24C01BE1D51B4AD000DB58B /* Constants.swift */,
-				8FFEADCA1D5A5C530049FC3A /* ImageUploader.swift */,
+				C26A1C531D694DE600EFA125 /* Application */,
+				C26A1C521D694DC500EFA125 /* Storyboards */,
+				C26A1C511D694D9100EFA125 /* Utilities */,
+				C26A1C501D694D7600EFA125 /* ViewControllers */,
 			);
 			path = Scoresheet;
 			sourceTree = "<group>";
