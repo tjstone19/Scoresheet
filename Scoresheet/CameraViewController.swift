@@ -53,11 +53,18 @@ class CameraViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // set up ui buttons
         self.setUpUI()
+        
+        // configure AVCaptureSession for camera
         self.setUpCaptureSession()
         
+        // Retrieve GameData from CoreData
         gameData = fetchGameData()
     }
+    
+    
     
     // Retrieves the users name, club, and team from core data.
     func fetchGameData() -> GameData {

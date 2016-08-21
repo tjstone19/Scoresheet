@@ -99,7 +99,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
         
         cameraButton.addGestureRecognizer(
             UITapGestureRecognizer(target: self,
-            action:#selector(GameIdViewController.takePicture(_:))))
+            action:#selector(GameIdViewController.alertUser(_:))))
         
         idTF.text = gameData.gameId
     }
@@ -126,9 +126,23 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
         }
     }
     
+    // Presents a UIAlert message to user telling them how to use the camera.
+    func alertUser(sender: UITapGestureRecognizer) {
+        let alert = UIAlertController(title: "Camera Use",
+                                      message: "Tap anywhere to take a picture.",
+                                      preferredStyle: UIAlertControllerStyle.Alert)
+        
+        alert.addAction(UIAlertAction(title: "OK",
+            style: UIAlertActionStyle.Default,
+            handler: self.takePicture(_:)))
+        
+        self.presentViewController(alert, animated: true,
+                                   completion: nil)
+    }
+    
     // Called when the pictureButton is pressed.
     // Transitions to the CameraViewController if the user has entered a name.
-    func takePicture(sender: UITapGestureRecognizer) {
+    func takePicture(action: UIAlertAction) {
         
         // Check that user entered text in game id text field
         if  idTF.text?.characters.count == self.constants.GAME_ID_LENGTH {
