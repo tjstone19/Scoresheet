@@ -137,7 +137,7 @@ class CameraViewController: UIViewController {
         // Transition to GameIdViewController
         let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
         let vc = storyboard.instantiateViewControllerWithIdentifier(
-            "GameDataViewController") as! GameDataViewController
+            "GameIdViewController") as! GameIdViewController
         self.presentViewController(vc, animated: true, completion: nil)
     }
     
@@ -211,24 +211,31 @@ class CameraViewController: UIViewController {
         }
     }
     
+    // Sets up the camera view.
     func beginSession() {
+        // Locks camera for configuration
         configureDevice()
         
         do {
+            // add back camera as input to the AVCaptureSession
             try captureSession.addInput(AVCaptureDeviceInput(device: backCamera))
         } catch {
             print(error)
         }
         
+        // use photo presets
         captureSession.sessionPreset = AVCaptureSessionPresetPhoto
+        // start the capture session
         captureSession.startRunning()
         
+        // set image type to jpeg
         stillImageOutput.outputSettings = [AVVideoCodecKey:AVVideoCodecJPEG]
         
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
         }
         
+        // initialize the AVCapturePreviewLayer to display what the back camera "sees"
         if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
             previewLayer.bounds = view.bounds
             previewLayer.position = CGPointMake(view.bounds.midX, view.bounds.midY)
@@ -240,8 +247,11 @@ class CameraViewController: UIViewController {
             
             cameraPreview.layer.addSublayer(previewLayer)
             
+            // Add gesture recognizer which takes a picture when 
+            // the user taps anywhere on the screen
             cameraPreview.addGestureRecognizer(pictureGesture)
             
+            // add the camera view onto the main view
             view.addSubview(cameraPreview)
             
             // Add back button to the camera preview layer
@@ -252,34 +262,35 @@ class CameraViewController: UIViewController {
     
     // Presents the picture to the user
     func showPhoto(sender: UITapGestureRecognizer) {
+        // Prevent more pictures from being taken
         self.cameraPreview.removeGestureRecognizer(pictureGesture)
         
+        // Take picture
         if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
                 (imageDataSampleBuffer, error) -> Void in
+                
+                // Convert image to jpeg
                 let imageData =
                     AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
                 
+                // Initialize imageview with the jpeg image
                 self.image = UIImage(data: imageData)!
                 let imageView = UIImageView(image: self.image)
                 imageView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width,
                                          height: self.view.bounds.size.height)
                 
-              
+                // add image view to superview
                 self.view.addSubview(imageView)
+                
+                // Add use and retake buttons to imageview
                 imageView.addSubview(self.okButton)
                 imageView.addSubview(self.retakeButton)
                 
-                self.backButton.hidden = !self.backButton.hidden
-                self.backButton.enabled = !self.backButton.enabled
-                self.okButton.hidden = !self.okButton.hidden
-                self.okButton.enabled = !self.okButton.enabled
+                // Make use and retake buttons visible
+                self.toggleButtonVisibility()
                 
-                //self.retakeButton.frame = CGRect(x: 20, y: 401,
-                  //                               width: 120, height: 80)
-                //self.okButton.frame = CGRect(x: 205, y: 401,
-                    //                         width: 120, height: 80)
-                
+                // allows buttons to recieve tap notifications
                 imageView.userInteractionEnabled = true
             }
         }

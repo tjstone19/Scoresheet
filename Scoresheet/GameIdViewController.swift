@@ -18,7 +18,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     // Transitions to the CameraView when a touch gesture is detected
     @IBOutlet weak var cameraButton: UIButton!
     
-    @IBOutlet weak var backButton: UIButton!
+   
     
     // Used to access core data
     let managedObjectContext =
@@ -43,6 +43,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
         self.setUpUI()
     }
     
+    /*
     // Retrieves the users name, club, and team from core data.
     func fetchGameData() -> GameData {
         let fetchRequest = NSFetchRequest(entityName: "GameData")
@@ -58,6 +59,39 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
         }
         
         return fetchResults[0]
+    }*/
+    
+    // Retrieves the GameData object from core data
+    // If a GameData object is not already instanciated, a new GameData
+    // object will be created
+    func fetchGameData() -> GameData {
+        let fetchRequest = NSFetchRequest(entityName: "GameData")
+        var gameData: GameData
+        
+        // Request access to GameData object from core data
+        do {
+            try fetchResults =
+                (managedObjectContext.executeFetchRequest(fetchRequest)
+                    as? [GameData])!
+            //print(fetchResults)
+        } catch {
+            print("ERROR: Unable to access core data in GameIDViewController")
+        }
+        
+        // Create a GameData object in core data if one does not exist
+        if (fetchResults.count == 0) {
+            
+            // Used to save the user's name, club name, and team division to core data
+            gameData = NSEntityDescription.insertNewObjectForEntityForName(
+                "GameData", inManagedObjectContext: managedObjectContext)
+                as! GameData
+        }
+        else {
+            // GameData object already created in core data
+            gameData = fetchResults[0]
+        }
+        
+        return gameData
     }
     
     // Saves the user's name, club name, and team division to core data.
@@ -84,10 +118,6 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
             UITapGestureRecognizer(target: self,
             action:#selector(GameIdViewController.takePicture(_:))))
         
-        backButton.addGestureRecognizer(
-            UITapGestureRecognizer(target: self,
-                action:#selector(GameIdViewController.backButtonPressed(_:))))
-        
         idTF.text = gameData.gameId
     }
     
@@ -111,18 +141,6 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
             
             self.saveData()
         }
-    }
-    
-    // Called when the back button is pressed.
-    // Transitions back to the game data view controller.
-    func backButtonPressed(sender: UITapGestureRecognizer) {
-        self.saveData()
-        
-        // Transition to GameIdViewController
-        let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
-        let vc = storyboard.instantiateViewControllerWithIdentifier(
-            "GameDataViewController") as! GameDataViewController
-        self.presentViewController(vc, animated: true, completion: nil)
     }
     
     // Called when the pictureButton is pressed.
