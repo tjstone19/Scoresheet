@@ -126,8 +126,10 @@ class CameraViewController: UIViewController {
     
     // Toggles back button and ok button visibility
     func toggleButtonVisibility() {
-        backButton.hidden = !backButton.hidden
-        backButton.enabled = !backButton.enabled
+        //backButton.hidden = !backButton.hidden
+        //backButton.enabled = !backButton.enabled
+        retakeButton.hidden = !retakeButton.hidden
+        retakeButton.enabled = !retakeButton.enabled
         okButton.hidden = !okButton.hidden
         okButton.enabled = !okButton.enabled
     }
@@ -250,6 +252,9 @@ class CameraViewController: UIViewController {
             // Add gesture recognizer which takes a picture when 
             // the user taps anywhere on the screen
             cameraPreview.addGestureRecognizer(pictureGesture)
+            
+            // add back button to camera view
+            cameraPreview.addSubview(backButton)
             
             // add the camera view onto the main view
             view.addSubview(cameraPreview)

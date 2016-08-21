@@ -86,17 +86,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="Back"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ws8-aM-SUo">
-                                <rect key="frame" x="46" y="433" width="228" height="147"/>
-                                <color key="backgroundColor" red="1" green="0.083993012410454204" blue="0.047844729589277435" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="ws8-aM-SUo" secondAttribute="height" multiplier="76:49" id="vJB-bd-QWl"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" title="Retake">
-                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ojN-rA-FxZ">
                                 <rect key="frame" x="329" y="433" width="228" height="147"/>
                                 <color key="backgroundColor" red="0.28435904333123474" green="0.94754172120418845" blue="0.096048380511166986" alpha="1" colorSpace="calibratedRGB"/>
@@ -108,15 +97,28 @@
                                     <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ws8-aM-SUo">
+                                <rect key="frame" x="46" y="433" width="228" height="147"/>
+                                <color key="backgroundColor" red="1" green="0.083993012410454204" blue="0.047844729589277435" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="ws8-aM-SUo" secondAttribute="height" multiplier="76:49" id="vJB-bd-QWl"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Retake">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="ojN-rA-FxZ" firstAttribute="top" secondItem="kS8-Qh-FSh" secondAttribute="bottom" constant="332" id="6iB-IZ-yGU"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ojN-rA-FxZ" secondAttribute="trailing" constant="26" id="7IP-zo-LXr"/>
                             <constraint firstItem="yoT-Nw-aRS" firstAttribute="top" secondItem="ojN-rA-FxZ" secondAttribute="bottom" constant="20" id="Lj5-Uj-t8J"/>
+                            <constraint firstItem="ojN-rA-FxZ" firstAttribute="height" secondItem="ws8-aM-SUo" secondAttribute="height" id="age-7V-miv"/>
                             <constraint firstItem="yoT-Nw-aRS" firstAttribute="top" secondItem="ws8-aM-SUo" secondAttribute="bottom" constant="20" id="cee-69-8EA"/>
                             <constraint firstItem="kS8-Qh-FSh" firstAttribute="top" secondItem="avC-O9-YNE" secondAttribute="bottom" id="dH6-FP-sAY"/>
                             <constraint firstItem="ws8-aM-SUo" firstAttribute="leading" secondItem="8o8-Lp-IJR" secondAttribute="leadingMargin" constant="26" id="eax-K4-LqG"/>
+                            <constraint firstItem="ojN-rA-FxZ" firstAttribute="width" secondItem="ws8-aM-SUo" secondAttribute="width" id="mTD-Ih-T5n"/>
                             <constraint firstItem="ws8-aM-SUo" firstAttribute="top" secondItem="kS8-Qh-FSh" secondAttribute="bottom" constant="332" id="pVo-DT-Lfd"/>
                         </constraints>
                     </view>

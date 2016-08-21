@@ -43,24 +43,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
         self.setUpUI()
     }
     
-    /*
-    // Retrieves the users name, club, and team from core data.
-    func fetchGameData() -> GameData {
-        let fetchRequest = NSFetchRequest(entityName: "GameData")
-        
-        // Request access to GameData object from core data
-        do {
-            try fetchResults =
-                (managedObjectContext.executeFetchRequest(fetchRequest)
-                    as? [GameData])!
-            //print(fetchResults)
-        } catch {
-            print("ERROR: Unable to access core data in GameIDViewController")
-        }
-        
-        return fetchResults[0]
-    }*/
-    
+  
     // Retrieves the GameData object from core data
     // If a GameData object is not already instanciated, a new GameData
     // object will be created
