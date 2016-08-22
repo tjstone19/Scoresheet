@@ -26,7 +26,7 @@ class CameraViewController: UIViewController {
     @IBOutlet weak var retakeButton: UIButton!
     
     // Sends the picture to the server when pressed
-    @IBOutlet weak var okButton: UIButton!
+    @IBOutlet weak var useButton: UIButton!
     
     // Transitions to GameIdViewController when pressed
     @IBOutlet weak var backButton: UIButton!
@@ -50,6 +50,16 @@ class CameraViewController: UIViewController {
     
     // Contains the game data in core data
     var gameData: GameData!
+    
+    // Application constant values
+    let constants: Constants = Constants()
+    
+    // Image view that displays the photo to the user
+    var imageView: UIImageView!
+    
+    // Indicator wheel displayed while the scoresheet photo is being uploaded
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,9 +92,6 @@ class CameraViewController: UIViewController {
         
         return fetchResults[0]
     }
-    
-
-    
     
     // Sets up the AVCaptureSession to take the picture.
     func setUpCaptureSession() {
@@ -120,9 +127,9 @@ class CameraViewController: UIViewController {
             UITapGestureRecognizer(target: self,
                 action:#selector(CameraViewController.retakeButtonPressed(_:))))
         
-        okButton.addGestureRecognizer(
+        useButton.addGestureRecognizer(
             UITapGestureRecognizer(target: self,
-                action:#selector(CameraViewController.okButtonPressed(_:))))
+                action:#selector(CameraViewController.useButtonPressed(_:))))
         
         self.pictureGesture =
             UITapGestureRecognizer(target: self,
@@ -137,12 +144,18 @@ class CameraViewController: UIViewController {
         //backButton.enabled = !backButton.enabled
         retakeButton.hidden = !retakeButton.hidden
         retakeButton.enabled = !retakeButton.enabled
-        okButton.hidden = !okButton.hidden
-        okButton.enabled = !okButton.enabled
+        useButton.hidden = !useButton.hidden
+        useButton.enabled = !useButton.enabled
     }
     
-    // Initializes a GameDataViewController
+    // Initializes a GameDataViewController after a response from the server has been received
     func segueToHomeScreen() {
+        // Stop activity wheel
+        self.activityIndicator.stopAnimating()
+        
+        // remove image view from super view
+        self.imageView.removeFromSuperview()
+        
         // Transition to GameIdViewController
         let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
         let vc = storyboard.instantiateViewControllerWithIdentifier(
@@ -151,17 +164,33 @@ class CameraViewController: UIViewController {
     }
     
     // Sends the photo to the server.
-    func okButtonPressed(sender: UITapGestureRecognizer) {
-        // TODO: Send photo to server
-        let uploader = ImageUploader(image: self.image,
+    func useButtonPressed(sender: UITapGestureRecognizer) {
+        // TODO: Add code for activity indicator
+        
+        // add activity indicator wheel to image view
+        imageView.addSubview(self.activityIndicator)
+        
+        // start activity indicator
+        // activity indicator stops when the server responds
+        self.activityIndicator.startAnimating()
+        
+        let uploader = ImageUploader(cameraVC: self,
+                                     image: self.image,
                                      name: gameData.userName!,
                                      club: gameData.clubName!,
                                      team: gameData.teamDivision!,
                                      game: gameData.gameId!)
         
+        // end activity indicator
         uploader.uploadImageToServer()
         
-        self.segueToHomeScreen()
+        
+        // IF fail
+            // display error message from server
+        // ELSE
+            // display message "Image uploaded successfully"
+        
+        //self.segueToHomeScreen()
     }
     
     // Removes input sources to captureSession
@@ -190,8 +219,6 @@ class CameraViewController: UIViewController {
             "GameIdViewController") as! GameIdViewController
         self.presentViewController(vc, animated: true, completion: nil)
     }
-
-    
     
     // Sets the back cameras focus mode to "Locked"
     func configureDevice() {
@@ -272,6 +299,15 @@ class CameraViewController: UIViewController {
         
     }
     
+    /*
+     //here u can control the width and height of the images........ this line is very important
+     image.setBounds((getWidth() / 2) - Constants.ZOOM_FACTOR,
+     (getHeight() / 2) - Constants.ZOOM_FACTOR,
+     (getWidth() / 2) + Constants.ZOOM_FACTOR,
+     (getHeight() / 2) + Constants.ZOOM_FACTOR);
+     image.draw(canvas);
+     */
+    
     // Presents the picture to the user
     func showPhoto(sender: UITapGestureRecognizer) {
         // Prevent more pictures from being taken
@@ -288,22 +324,28 @@ class CameraViewController: UIViewController {
                 
                 // Initialize imageview with the jpeg image
                 self.image = UIImage(data: imageData)!
-                let imageView = UIImageView(image: self.image)
-                imageView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width,
-                                         height: self.view.bounds.size.height)
+                self.imageView = UIImageView(image: self.image)
+                
+                //imageView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width,
+                  //                       height: self.view.bounds.size.height)
+                
+                
+                self.imageView.frame = CGRect(x: 0, y: 0,
+                                         width: (self.view.bounds.width / 2) + self.constants.ZOOM_FACTOR,
+                                         height: (self.view.bounds.width / 2) + self.constants.ZOOM_FACTOR)
                 
                 // add image view to superview
-                self.view.addSubview(imageView)
+                self.view.addSubview(self.imageView)
                 
                 // Add use and retake buttons to imageview
-                imageView.addSubview(self.okButton)
-                imageView.addSubview(self.retakeButton)
+                self.imageView.addSubview(self.useButton)
+                self.imageView.addSubview(self.retakeButton)
                 
                 // Make use and retake buttons visible
                 self.toggleButtonVisibility()
                 
                 // allows buttons to recieve tap notifications
-                imageView.userInteractionEnabled = true
+                self.imageView.userInteractionEnabled = true
             }
         }
     }

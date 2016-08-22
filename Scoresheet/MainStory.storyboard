@@ -86,7 +86,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="Back"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ojN-rA-FxZ">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ojN-rA-FxZ">
                                 <rect key="frame" x="329" y="433" width="228" height="147"/>
                                 <color key="backgroundColor" red="0.28435904333123474" green="0.94754172120418845" blue="0.096048380511166986" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -97,7 +97,10 @@
                                     <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ws8-aM-SUo">
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Zhh-fn-MXM">
+                                <rect key="frame" x="290" y="81" width="20" height="20"/>
+                            </activityIndicatorView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ws8-aM-SUo">
                                 <rect key="frame" x="46" y="433" width="228" height="147"/>
                                 <color key="backgroundColor" red="1" green="0.083993012410454204" blue="0.047844729589277435" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -111,21 +114,24 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="ojN-rA-FxZ" firstAttribute="top" secondItem="kS8-Qh-FSh" secondAttribute="bottom" constant="332" id="6iB-IZ-yGU"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="ojN-rA-FxZ" secondAttribute="trailing" constant="26" id="7IP-zo-LXr"/>
-                            <constraint firstItem="yoT-Nw-aRS" firstAttribute="top" secondItem="ojN-rA-FxZ" secondAttribute="bottom" constant="20" id="Lj5-Uj-t8J"/>
-                            <constraint firstItem="ojN-rA-FxZ" firstAttribute="height" secondItem="ws8-aM-SUo" secondAttribute="height" id="age-7V-miv"/>
-                            <constraint firstItem="yoT-Nw-aRS" firstAttribute="top" secondItem="ws8-aM-SUo" secondAttribute="bottom" constant="20" id="cee-69-8EA"/>
-                            <constraint firstItem="kS8-Qh-FSh" firstAttribute="top" secondItem="avC-O9-YNE" secondAttribute="bottom" id="dH6-FP-sAY"/>
-                            <constraint firstItem="ws8-aM-SUo" firstAttribute="leading" secondItem="8o8-Lp-IJR" secondAttribute="leadingMargin" constant="26" id="eax-K4-LqG"/>
-                            <constraint firstItem="ojN-rA-FxZ" firstAttribute="width" secondItem="ws8-aM-SUo" secondAttribute="width" id="mTD-Ih-T5n"/>
-                            <constraint firstItem="ws8-aM-SUo" firstAttribute="top" secondItem="kS8-Qh-FSh" secondAttribute="bottom" constant="332" id="pVo-DT-Lfd"/>
+                            <constraint firstItem="ojN-rA-FxZ" firstAttribute="top" secondItem="kS8-Qh-FSh" secondAttribute="bottom" constant="332" id="0Vq-oJ-YzG"/>
+                            <constraint firstItem="ws8-aM-SUo" firstAttribute="leading" secondItem="8o8-Lp-IJR" secondAttribute="leadingMargin" constant="26" id="3Ug-Vy-Sxp"/>
+                            <constraint firstItem="yoT-Nw-aRS" firstAttribute="top" secondItem="ws8-aM-SUo" secondAttribute="bottom" constant="20" id="5Zl-dc-3O9"/>
+                            <constraint firstItem="ojN-rA-FxZ" firstAttribute="width" secondItem="ws8-aM-SUo" secondAttribute="width" id="ArM-TK-zvZ"/>
+                            <constraint firstItem="Zhh-fn-MXM" firstAttribute="bottom" secondItem="kS8-Qh-FSh" secondAttribute="bottom" id="EIc-qw-Dh5"/>
+                            <constraint firstItem="yoT-Nw-aRS" firstAttribute="top" secondItem="ojN-rA-FxZ" secondAttribute="bottom" constant="20" id="EaN-LX-fac"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ojN-rA-FxZ" secondAttribute="trailing" constant="23" id="HSG-DP-1Qh"/>
+                            <constraint firstItem="ws8-aM-SUo" firstAttribute="top" secondItem="kS8-Qh-FSh" secondAttribute="bottom" constant="332" id="bUz-LK-RWO"/>
+                            <constraint firstItem="Zhh-fn-MXM" firstAttribute="centerX" secondItem="8o8-Lp-IJR" secondAttribute="centerX" id="nPX-P8-aVR"/>
+                            <constraint firstItem="Zhh-fn-MXM" firstAttribute="top" secondItem="avC-O9-YNE" secondAttribute="bottom" constant="61" id="vSO-WP-3BO"/>
+                            <constraint firstItem="ojN-rA-FxZ" firstAttribute="height" secondItem="ws8-aM-SUo" secondAttribute="height" id="xGB-uh-Nvz"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="Zhh-fn-MXM" id="oMr-7I-B91"/>
                         <outlet property="backButton" destination="kS8-Qh-FSh" id="PRF-Bm-dTU"/>
-                        <outlet property="okButton" destination="ojN-rA-FxZ" id="SsB-hF-ReO"/>
                         <outlet property="retakeButton" destination="ws8-aM-SUo" id="ap3-y3-xiZ"/>
+                        <outlet property="useButton" destination="ojN-rA-FxZ" id="mTE-dR-LHc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="csz-ht-NqR" userLabel="First Responder" sceneMemberID="firstResponder"/>
