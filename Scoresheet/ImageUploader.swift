@@ -8,13 +8,16 @@
 
 import UIKit
 
-class ImageUploader: NSObject {
+class ImageUploader: NSObject,
+                     NSURLSessionDelegate,
+                     NSURLSessionTaskDelegate,
+                     NSURLSessionDataDelegate {
     
     // Parameters for the HTTP Request
     var param = [
-        "game_number"  : "",
-        "scoresheet_file"    : "ScoresheetPic.jpeg",
-        "submitsheet"    : "Submit"
+        "game_number" : "",
+        "scoresheet_file" : "ScoresheetPic.jpeg",
+        "submitsheet" : "Submit"
     ]
     
     // Contains the picture of the scoresheet to be uploaded
@@ -38,14 +41,16 @@ class ImageUploader: NSObject {
     // Contains constant values for entire program
     let constants: Constants = Constants()
     
+    
     // Initializes an ImageUploader object with the given parameters
-    init(cameraVC: CameraViewController, image: UIImage, name: String, club: String, team: String, game: String) {
+    init(cameraVC: CameraViewController, image: UIImage, name: String,
+         club: String, team: String, game: String) {
+        
         self.uploadPic = image
         self.userName = name
         self.clubName = club
         self.teamDivision = team
         self.gameId = game
-        
         self.cameraVc = cameraVC
         
         param.updateValue(self.gameId, forKey: "game_number")
@@ -53,6 +58,56 @@ class ImageUploader: NSObject {
         param.updateValue(self.clubName, forKey: "clubname")
         param.updateValue(self.teamDivision, forKey: "teamdivision")
     }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    
+    
+    
+    // Called when a response is received from the Server indicating upload completion.
+    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask,
+                        didReceiveResponse response: NSURLResponse,
+                        completionHandler: (NSURLSessionResponseDisposition) -> Void) {
+        
+        print("Upload Complete Resopnse Received")
+        
+        // Transition to home screen
+        dispatch_async(dispatch_get_main_queue(),{
+             self.cameraVc.segueToHomeScreen()
+        });
+    }
+    
+    // Called when |bytesSent| amount of the image data has been sent to the server
+    // Total progress is |bytesSent| / |totalBytesExpectedToSend|
+    func URLSession(session: NSURLSession, task: NSURLSessionTask, didSendBodyData bytesSent: Int64,
+                    totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        
+        // calculate total progress
+        let uploadProgress:Float = Float(totalBytesSent) / Float(totalBytesExpectedToSend)
+        
+        // convert percentage to integer
+        let progressPercent = Int(uploadProgress*100)
+        
+        // Update camera view controller on the upload progress
+        dispatch_async(dispatch_get_main_queue(),{
+            self.cameraVc.setUploadProgress(uploadProgress, percent: progressPercent)
+        });
+    }
+    
+    
+    // Called when the upload session ends with an error.
+    // Prints an error message to the user.
+    func URLSession(session: NSURLSession, task: NSURLSessionTask,
+                    didCompleteWithError error: NSError?) {
+        
+        dispatch_async(dispatch_get_main_queue(),{
+            self.cameraVc.uploadError((error?.localizedDescription)!)
+        });
+    }
+    
     
     // Uploads the scoresheet jpeg image to the server.
     func uploadImageToServer()
@@ -83,6 +138,19 @@ class ImageUploader: NSObject {
                                                     imageDataKey: imageData!,
                                                     boundary: boundary)
         
+        // Use URL defualt configuration
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        
+        // Create URLSession with our configuration and this ImageUploader as the session's delegate.
+        // Once the session is created it begins running in new thread.
+        let session = NSURLSession(configuration: configuration,
+                                   delegate: self,
+                                   delegateQueue: NSOperationQueue.mainQueue())
+        
+        let task = session.uploadTaskWithRequest(request, fromData: imageData!)
+        task.resume()
+        
+        /*
         // Send http request
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
             data, response, error in
@@ -107,7 +175,7 @@ class ImageUploader: NSObject {
                 // Call CameraViewController's segue to home screen method in the main thread
                 // after parsing server response
                 dispatch_async(dispatch_get_main_queue(),{
-                    self.cameraVc.segueToHomeScreen()
+                   // self.cameraVc.segueToHomeScreen()
                 });
                 
             } catch {
@@ -116,11 +184,11 @@ class ImageUploader: NSObject {
                 // Call CameraViewController's segue to home screen method in the main thread
                 // after parsing server response
                 dispatch_async(dispatch_get_main_queue(),{
-                    self.cameraVc.segueToHomeScreen()
+                   // self.cameraVc.segueToHomeScreen()
                 });
             }
         }
-        task.resume()
+        task.resume()*/
     }
     
     // Creates the body of the HTTP request with |parameters| and the scoresheet image |imageDataKey|.

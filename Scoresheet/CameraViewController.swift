@@ -14,6 +14,7 @@ import AVFoundation
 class CameraViewController: UIViewController {
     
     let captureSession = AVCaptureSession()
+    
     var previewLayer : AVCaptureVideoPreviewLayer?
     
     // picture captured from camera
@@ -57,9 +58,17 @@ class CameraViewController: UIViewController {
     // Image view that displays the photo to the user
     var imageView: UIImageView!
     
-    // Indicator wheel displayed while the scoresheet photo is being uploaded
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    // Shows integer value of upload progress percentage
+    @IBOutlet weak var progressLabel: UILabel!
     
+    // Indicator wheel displayed while the scoresheet photo is being uploaded
+    //@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    // Progress bar that displays the upload progress percentage
+    @IBOutlet weak var progressBar: UIProgressView!
+    
+    // Displays "Uploading Photo..." to the user while the scoresheet is being uploaded.
+    @IBOutlet weak var uploadPhotoLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,7 +83,36 @@ class CameraViewController: UIViewController {
         gameData = fetchGameData()
     }
     
+    // Updates the progress bar and progress labels values.
+    func setUploadProgress(progress: Float, percent: Int) {
+        progressBar.progress = progress
+        progressLabel.text = "\(percent)%"
+    }
     
+    // Called when an error was encountered while uploading the image.
+    // Presents error message to the user.
+    func uploadError(errorMessage: String) {
+        let alert = UIAlertController(title: "Failed to upload image",
+                                      message: "Reason: +  \(errorMessage)",
+                                      preferredStyle: UIAlertControllerStyle.Alert)
+        
+        alert.addAction(UIAlertAction(title: "OK",
+            style: UIAlertActionStyle.Default,
+            handler: self.errorMessageRead(_:)))
+        
+        self.presentViewController(alert, animated: true,
+                                   completion: nil)
+    }
+    
+    /****
+        *
+        * TODO: add pop up for successful upload
+        */
+    
+    // Transitions to home screen
+    func errorMessageRead(alert: UIAlertAction) {
+        self.segueToHomeScreen()
+    }
     
     // Retrieves the users name, club, and team from core data.
     func fetchGameData() -> GameData {
@@ -135,6 +173,13 @@ class CameraViewController: UIViewController {
             UITapGestureRecognizer(target: self,
                                    action:#selector(CameraViewController.showPhoto(_:)))
         
+        progressBar.hidden = true
+        progressLabel.hidden = true
+        progressLabel.enabled = false
+        
+        progressBar.progress = 0
+        progressLabel.text = "0%"
+        
         toggleButtonVisibility()
     }
     
@@ -151,7 +196,7 @@ class CameraViewController: UIViewController {
     // Initializes a GameDataViewController after a response from the server has been received
     func segueToHomeScreen() {
         // Stop activity wheel
-        self.activityIndicator.stopAnimating()
+        //self.activityIndicator.stopAnimating()
         
         // remove image view from super view
         self.imageView.removeFromSuperview()
@@ -168,11 +213,23 @@ class CameraViewController: UIViewController {
         // TODO: Add code for activity indicator
         
         // add activity indicator wheel to image view
-        imageView.addSubview(self.activityIndicator)
+       // imageView.addSubview(self.activityIndicator)
         
         // start activity indicator
         // activity indicator stops when the server responds
-        self.activityIndicator.startAnimating()
+        // self.activityIndicator.startAnimating()
+        
+        
+        // Remove image from main view
+        imageView.removeFromSuperview()
+        
+        // Remove camera view from main view
+        cameraPreview.removeFromSuperview()
+        
+        // Enable progress bar and progress label
+        progressBar.hidden = false
+        progressLabel.hidden = false
+        progressLabel.enabled = true
         
         let uploader = ImageUploader(cameraVC: self,
                                      image: self.image,
@@ -296,17 +353,7 @@ class CameraViewController: UIViewController {
             // Add back button to the camera preview layer
             cameraPreview.addSubview(backButton)
         }
-        
     }
-    
-    /*
-     //here u can control the width and height of the images........ this line is very important
-     image.setBounds((getWidth() / 2) - Constants.ZOOM_FACTOR,
-     (getHeight() / 2) - Constants.ZOOM_FACTOR,
-     (getWidth() / 2) + Constants.ZOOM_FACTOR,
-     (getHeight() / 2) + Constants.ZOOM_FACTOR);
-     image.draw(canvas);
-     */
     
     // Presents the picture to the user
     func showPhoto(sender: UITapGestureRecognizer) {
