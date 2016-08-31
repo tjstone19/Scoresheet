@@ -101,11 +101,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
             UITapGestureRecognizer(target: self,
             action:#selector(GameIdViewController.alertUser(_:))))
         
-        idTF.text = gameData.gameId
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        
+        idTF.text = ""
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -120,24 +116,45 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
         if idTF.text?.characters.count == self.constants.GAME_ID_LENGTH {
             cameraButton.enabled = true
             cameraButton.tintColor = UIColor.blueColor()
-            cameraButton.backgroundColor = UIColor.lightGrayColor()
-            
-            self.saveData()
+            cameraButton.backgroundColor = UIColor.greenColor()
         }
+        else {
+            cameraButton.enabled = false
+            cameraButton.tintColor = UIColor.blueColor()
+            cameraButton.backgroundColor = UIColor.redColor()
+        }
+        
+        self.saveData()
     }
     
     // Presents a UIAlert message to user telling them how to use the camera.
     func alertUser(sender: UITapGestureRecognizer) {
-        let alert = UIAlertController(title: "Camera Use",
-                                      message: "Tap anywhere to take a picture.",
-                                      preferredStyle: UIAlertControllerStyle.Alert)
-        
-        alert.addAction(UIAlertAction(title: "OK",
-            style: UIAlertActionStyle.Default,
-            handler: self.takePicture(_:)))
-        
-        self.presentViewController(alert, animated: true,
-                                   completion: nil)
+        if idTF.text?.characters.count == self.constants.GAME_ID_LENGTH {
+            let alert = UIAlertController(title: "Camera Use",
+                                          message: "Tap anywhere to take a picture.",
+                                          preferredStyle: UIAlertControllerStyle.Alert)
+            
+            alert.addAction(UIAlertAction(title: "OK",
+                style: UIAlertActionStyle.Default,
+                handler: self.takePicture(_:)))
+            
+            self.presentViewController(alert, animated: true,
+                                       completion: nil)
+
+        }
+        else {
+            let alert = UIAlertController(title: "Invalid Game ID",
+                                          message: "Game ID requires " +
+                                                    "\(self.constants.GAME_ID_LENGTH) characters.",
+                                          preferredStyle: UIAlertControllerStyle.Alert)
+            
+            alert.addAction(UIAlertAction(title: "OK",
+                style: UIAlertActionStyle.Default,
+                handler: nil))
+            
+            self.presentViewController(alert, animated: true,
+                                       completion: nil)
+        }
     }
     
     // Called when the pictureButton is pressed.
@@ -155,7 +172,6 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
             let vc = storyboard.instantiateViewControllerWithIdentifier(
                 "CameraViewController") as! CameraViewController
             self.presentViewController(vc, animated: true, completion: nil)
-            
         }
     }
 }

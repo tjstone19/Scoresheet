@@ -23,15 +23,6 @@ class ImageUploader: NSObject,
     // Contains the picture of the scoresheet to be uploaded
     var uploadPic: UIImage
     
-    // Name of the user
-    var userName: String
-    
-    // Name of the user's club
-    var clubName: String
-    
-    // Division of the user's team
-    var teamDivision: String
-    
     // NORCAL game ID
     var gameId: String
     
@@ -43,41 +34,23 @@ class ImageUploader: NSObject,
     
     
     // Initializes an ImageUploader object with the given parameters
-    init(cameraVC: CameraViewController, image: UIImage, name: String,
-         club: String, team: String, game: String) {
+    init(cameraVC: CameraViewController, image: UIImage, game: String) {
         
         self.uploadPic = image
-        self.userName = name
-        self.clubName = club
-        self.teamDivision = team
         self.gameId = game
         self.cameraVc = cameraVC
         
         param.updateValue(self.gameId, forKey: "game_number")
-        param.updateValue(self.userName, forKey: "username")
-        param.updateValue(self.clubName, forKey: "clubname")
-        param.updateValue(self.teamDivision, forKey: "teamdivision")
+        print(param)
     }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-    
-    
     
     // Called when a response is received from the Server indicating upload completion.
     func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask,
                         didReceiveResponse response: NSURLResponse,
                         completionHandler: (NSURLSessionResponseDisposition) -> Void) {
         
-        print("Upload Complete Resopnse Received")
-        
-        // Transition to home screen
-        dispatch_async(dispatch_get_main_queue(),{
-             self.cameraVc.segueToHomeScreen()
-        });
+        print("Response")
+        print(response)
     }
     
     // Called when |bytesSent| amount of the image data has been sent to the server
@@ -96,6 +69,7 @@ class ImageUploader: NSObject,
             self.cameraVc.setUploadProgress(uploadProgress, percent: progressPercent)
         });
     }
+    
     
     
     // Called when the upload session ends with an error.
@@ -139,19 +113,64 @@ class ImageUploader: NSObject,
                                                     boundary: boundary)
         
         // Use URL defualt configuration
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        let config = NSURLSession.sharedSession().configuration
+        
+        
+        //let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         
         // Create URLSession with our configuration and this ImageUploader as the session's delegate.
         // Once the session is created it begins running in new thread.
-        let session = NSURLSession(configuration: configuration,
+        let session = NSURLSession(configuration: config,
                                    delegate: self,
                                    delegateQueue: NSOperationQueue.mainQueue())
         
-        let task = session.uploadTaskWithRequest(request, fromData: imageData!)
+        //let task = session.uploadTaskWithRequest(request, fromData: imageData!) {
+        let task = session.dataTaskWithRequest(request) {
+            data, response, error in
+            
+            if error != nil {
+                print("error=\(error)")
+                return
+            }
+            
+            // You can print out response object
+            print("******* response = \(response)")
+            
+            // Print out reponse body
+            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            print("****** response data = \(responseString!)")
+            
+            // Check if scoresheet was accepted
+            if responseString!.containsString(self.constants.SCORESHEET_ACCEPTED) {
+                dispatch_async(dispatch_get_main_queue(),{
+                    self.cameraVc.uploadSuccess()
+                });
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(),{
+                    self.cameraVc.uploadError(self.constants.UPLOAD_FAIL_MESSAGE)
+                });
+            }
+        }
+
         task.resume()
         
-        /*
-        // Send http request
+        
+        /* 
+         789AA1
+         789AB1
+         789AC1
+         789AD1
+         789AE1
+         789AF1
+         789AG1
+         789AH1
+         789AI1
+         789AJ1
+        */
+       
+        
+       /* // Send http request
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
             data, response, error in
             
@@ -168,23 +187,15 @@ class ImageUploader: NSObject,
             print("****** response data = \(responseString!)")
             
             
-            do {
-                var json = try NSJSONSerialization.JSONObjectWithData(data!,
-                                                                      options: .MutableContainers) as? NSDictionary
-                
-                // Call CameraViewController's segue to home screen method in the main thread
-                // after parsing server response
+            // Check if scoresheet was accepted
+            if responseString!.containsString(self.constants.SCORESHEET_ACCEPTED) {
                 dispatch_async(dispatch_get_main_queue(),{
-                   // self.cameraVc.segueToHomeScreen()
+                    self.cameraVc.uploadSuccess()
                 });
-                
-            } catch {
-                print("ERROR converting server response to JSON")
-                
-                // Call CameraViewController's segue to home screen method in the main thread
-                // after parsing server response
+            }
+            else {
                 dispatch_async(dispatch_get_main_queue(),{
-                   // self.cameraVc.segueToHomeScreen()
+                    self.cameraVc.uploadError(self.constants.UPLOAD_FAIL_MESSAGE)
                 });
             }
         }
@@ -221,7 +232,7 @@ class ImageUploader: NSObject,
     }
     
     // Creates boundary string for HTTP request
-    func generateBoundaryString() -> String {
+func generateBoundaryString() -> String {
         return "Boundary-\(NSUUID().UUIDString)"
     }
 }

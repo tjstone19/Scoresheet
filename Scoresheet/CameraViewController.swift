@@ -70,6 +70,7 @@ class CameraViewController: UIViewController {
     // Displays "Uploading Photo..." to the user while the scoresheet is being uploaded.
     @IBOutlet weak var uploadPhotoLabel: UILabel!
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -92,17 +93,35 @@ class CameraViewController: UIViewController {
     // Called when an error was encountered while uploading the image.
     // Presents error message to the user.
     func uploadError(errorMessage: String) {
+        print(gameData.gameId)
+        
         let alert = UIAlertController(title: "Failed to upload image",
-                                      message: "Reason: +  \(errorMessage)",
+                                      message: "\(errorMessage)",
                                       preferredStyle: UIAlertControllerStyle.Alert)
         
         alert.addAction(UIAlertAction(title: "OK",
             style: UIAlertActionStyle.Default,
-            handler: self.errorMessageRead(_:)))
+            handler: self.messageRead(_:)))
         
         self.presentViewController(alert, animated: true,
                                    completion: nil)
     }
+    
+    // Called when an error was encountered while uploading the image.
+    // Presents error message to the user.
+    func uploadSuccess() {
+        let alert = UIAlertController(title: "Upload Complete",
+                                      message: "Scoresheet submitted for game \(gameData.gameId)",
+                                      preferredStyle: UIAlertControllerStyle.Alert)
+        
+        alert.addAction(UIAlertAction(title: "OK",
+            style: UIAlertActionStyle.Default,
+            handler: self.messageRead(_:)))
+        
+        self.presentViewController(alert, animated: true,
+                                   completion: nil)
+    }
+
     
     /****
         *
@@ -110,7 +129,7 @@ class CameraViewController: UIViewController {
         */
     
     // Transitions to home screen
-    func errorMessageRead(alert: UIAlertAction) {
+    func messageRead(alert: UIAlertAction) {
         self.segueToHomeScreen()
     }
     
@@ -169,18 +188,32 @@ class CameraViewController: UIViewController {
             UITapGestureRecognizer(target: self,
                 action:#selector(CameraViewController.useButtonPressed(_:))))
         
+        // Convers entire view which allows users to tap screen anywhere to take a picture
         self.pictureGesture =
             UITapGestureRecognizer(target: self,
                                    action:#selector(CameraViewController.showPhoto(_:)))
         
-        progressBar.hidden = true
+        /*progressBar.hidden = true
         progressLabel.hidden = true
         progressLabel.enabled = false
+        uploadPhotoLabel.hidden = true
+        uploadPhotoLabel.enabled = false */
+        
         
         progressBar.progress = 0
         progressLabel.text = "0%"
         
+        toggleProgressVisibility()
         toggleButtonVisibility()
+    }
+    
+    // Toggles progress bar, progress label, and uploading photo label visibility
+    func toggleProgressVisibility() {
+        progressBar.hidden = !progressBar.hidden
+        progressLabel.hidden = !progressLabel.hidden
+        progressLabel.enabled = !progressLabel.enabled
+        uploadPhotoLabel.hidden = !uploadPhotoLabel.hidden
+        uploadPhotoLabel.enabled = !uploadPhotoLabel.enabled
     }
     
     // Toggles back button and ok button visibility
@@ -210,15 +243,6 @@ class CameraViewController: UIViewController {
     
     // Sends the photo to the server.
     func useButtonPressed(sender: UITapGestureRecognizer) {
-        // TODO: Add code for activity indicator
-        
-        // add activity indicator wheel to image view
-       // imageView.addSubview(self.activityIndicator)
-        
-        // start activity indicator
-        // activity indicator stops when the server responds
-        // self.activityIndicator.startAnimating()
-        
         
         // Remove image from main view
         imageView.removeFromSuperview()
@@ -226,16 +250,12 @@ class CameraViewController: UIViewController {
         // Remove camera view from main view
         cameraPreview.removeFromSuperview()
         
-        // Enable progress bar and progress label
-        progressBar.hidden = false
-        progressLabel.hidden = false
-        progressLabel.enabled = true
+        // Enable progress bar, progress label, and uploading photo label
+        toggleProgressVisibility()
+        
         
         let uploader = ImageUploader(cameraVC: self,
                                      image: self.image,
-                                     name: gameData.userName!,
-                                     club: gameData.clubName!,
-                                     team: gameData.teamDivision!,
                                      game: gameData.gameId!)
         
         // end activity indicator
@@ -261,8 +281,17 @@ class CameraViewController: UIViewController {
     
     // Reinitializes the capture session to take another picture
     func retakeButtonPressed(sender: UITapGestureRecognizer) {
+        // Stop capture session and clear avcapture device inputs
         self.captureSession.stopRunning()
         self.clearAVCaptureDeviceInputs()
+        
+        // clear old image
+        self.imageView.image = nil
+        
+        // view did load will toggle progress bar and label back off
+        toggleProgressVisibility()
+        
+        // reload the view
         self.viewDidLoad()
     }
     
@@ -280,25 +309,27 @@ class CameraViewController: UIViewController {
     // Sets the back cameras focus mode to "Locked"
     func configureDevice() {
         do {
+            
             let device = backCamera
             
-            try device!.lockForConfiguration()
-            
-            //device!.focusMode = .Locked
-            device!.unlockForConfiguration()
-            
+            // Set focus mode to continously focus on the content in the center of the camera
             let focusMode:AVCaptureFocusMode =
                 AVCaptureFocusMode.ContinuousAutoFocus
             
+            // Lock back camera for configuration
+            // (Must have lock on the camera before you can alter the focus mode)
             try device?.lockForConfiguration()
             
+            // Check if the camera supports focus mode
             if device!.isFocusModeSupported(focusMode) {
-                 // lock for configuration
+                
                 device!.focusMode = focusMode
-                // unlock
+                
             }
-            
+            // Unlock device since we finished configuring the camera and want to allow for
+            // future alterations to the back camera's configuration
             device!.unlockForConfiguration()
+            
         } catch {
             print(error)
         }
@@ -306,25 +337,30 @@ class CameraViewController: UIViewController {
     
     // Sets up the camera view.
     func beginSession() {
-        // Locks camera for configuration
+        
+        // Configure back camera's focus mode
         configureDevice()
         
         do {
-            // add back camera as input to the AVCaptureSession
+            // Add back camera as input to the AVCaptureSession
             try captureSession.addInput(AVCaptureDeviceInput(device: backCamera))
         } catch {
             print(error)
         }
         
-        // use photo presets
+        // Use photo preset: allows for full resolution photo quality output
         captureSession.sessionPreset = AVCaptureSessionPresetPhoto
-        // start the capture session
+        
+        // Start the capture session
         captureSession.startRunning()
         
-        // set image type to jpeg
+        // Set image type to jpeg
         stillImageOutput.outputSettings = [AVVideoCodecKey:AVVideoCodecJPEG]
         
+        // Check if the capture session can add an AVCaptureOutput
         if captureSession.canAddOutput(stillImageOutput) {
+            // Add an AVCaptureStillImageOutput object to the capture session which will
+            // store the image of the scoresheet.
             captureSession.addOutput(stillImageOutput)
         }
         
@@ -376,10 +412,19 @@ class CameraViewController: UIViewController {
                 //imageView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width,
                   //                       height: self.view.bounds.size.height)
                 
+                let newOrigin: CGPoint = CGPoint(x: 0 - (self.constants.ZOOM_FACTOR / 2.0),
+                                                 y: 0 - (self.constants.ZOOM_FACTOR / 2.0))
                 
-                self.imageView.frame = CGRect(x: 0, y: 0,
-                                         width: (self.view.bounds.width / 2) + self.constants.ZOOM_FACTOR,
-                                         height: (self.view.bounds.width / 2) + self.constants.ZOOM_FACTOR)
+                let newSize: CGSize = CGSize(width: self.view.bounds.width + self.constants.ZOOM_FACTOR ,
+                                             height: self.view.bounds.height + self.constants.ZOOM_FACTOR)
+                
+                self.imageView.frame = CGRect(origin: newOrigin, size: newSize)
+                
+               /* self.imageView.frame = CGRect(x: (self.view.bounds.width / 2.0) - self.constants.ZOOM_FACTOR,
+                                              y: (self.view.bounds.height / 2.0) - self.constants.ZOOM_FACTOR,
+                                              width: (self.view.bounds.width / 2.0) + self.constants.ZOOM_FACTOR,
+                                              height: (self.view.bounds.height / 2.0) + self.constants.ZOOM_FACTOR)*/
+                
                 
                 // add image view to superview
                 self.view.addSubview(self.imageView)
