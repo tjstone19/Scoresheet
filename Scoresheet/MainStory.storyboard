@@ -19,12 +19,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NORCAL Game ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eRl-HA-4l5">
-                                <rect key="frame" x="231" y="103" width="138" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gT3-aU-UdI">
                                 <rect key="frame" x="0.0" y="511" width="600" height="89"/>
                                 <color key="backgroundColor" red="0.94764397909999998" green="0.1054501454" blue="0.028076481090000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -39,22 +33,28 @@
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Kmj-bO-N6w">
                                 <rect key="frame" x="51" y="152" width="499" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters"/>
                                 <connections>
                                     <outlet property="delegate" destination="8KW-am-sZj" id="n5T-vF-Ugx"/>
                                 </connections>
                             </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NORCAL Game ID (Enter 6 characters)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eRl-HA-4l5">
+                                <rect key="frame" x="153" y="99" width="295" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="eRl-HA-4l5" firstAttribute="top" secondItem="tUI-06-hxl" secondAttribute="bottom" constant="83" id="4RD-Eb-FmN"/>
+                            <constraint firstItem="eRl-HA-4l5" firstAttribute="top" secondItem="tUI-06-hxl" secondAttribute="bottom" constant="79" id="4RD-Eb-FmN"/>
                             <constraint firstItem="Kmj-bO-N6w" firstAttribute="centerX" secondItem="gT3-aU-UdI" secondAttribute="centerX" id="Mo6-SS-uhx"/>
                             <constraint firstAttribute="trailing" secondItem="gT3-aU-UdI" secondAttribute="trailing" id="QsX-kO-8CX"/>
                             <constraint firstItem="Kmj-bO-N6w" firstAttribute="leading" secondItem="7xY-hg-Rkl" secondAttribute="leadingMargin" constant="31" id="Rc1-7S-8vO"/>
                             <constraint firstItem="gT3-aU-UdI" firstAttribute="bottom" secondItem="xku-za-TLf" secondAttribute="top" id="XAd-5S-9lV"/>
                             <constraint firstItem="eRl-HA-4l5" firstAttribute="centerX" secondItem="Kmj-bO-N6w" secondAttribute="centerX" id="knT-xS-LDP"/>
                             <constraint firstItem="gT3-aU-UdI" firstAttribute="leading" secondItem="7xY-hg-Rkl" secondAttribute="leading" id="lWL-Ad-84f"/>
-                            <constraint firstItem="Kmj-bO-N6w" firstAttribute="top" secondItem="eRl-HA-4l5" secondAttribute="bottom" constant="28" id="zae-iK-XPc"/>
+                            <constraint firstItem="Kmj-bO-N6w" firstAttribute="top" secondItem="eRl-HA-4l5" secondAttribute="bottom" constant="32" id="zae-iK-XPc"/>
                         </constraints>
                     </view>
                     <connections>

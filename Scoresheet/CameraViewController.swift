@@ -418,12 +418,7 @@ class CameraViewController: UIViewController {
                 let newSize: CGSize = CGSize(width: self.view.bounds.width + self.constants.ZOOM_FACTOR ,
                                              height: self.view.bounds.height + self.constants.ZOOM_FACTOR)
                 
-                self.imageView.frame = CGRect(origin: newOrigin, size: newSize)
-                
-               /* self.imageView.frame = CGRect(x: (self.view.bounds.width / 2.0) - self.constants.ZOOM_FACTOR,
-                                              y: (self.view.bounds.height / 2.0) - self.constants.ZOOM_FACTOR,
-                                              width: (self.view.bounds.width / 2.0) + self.constants.ZOOM_FACTOR,
-                                              height: (self.view.bounds.height / 2.0) + self.constants.ZOOM_FACTOR)*/
+                self.imageView.frame = CGRect(origin: newOrigin, size: newSize) 
                 
                 
                 // add image view to superview

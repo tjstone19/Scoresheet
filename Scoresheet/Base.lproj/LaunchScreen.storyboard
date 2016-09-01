@@ -18,7 +18,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash.png" translatesAutoresizingMaskIntoConstraints="NO" id="Mos-mJ-P8e">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splashscreen.png" translatesAutoresizingMaskIntoConstraints="NO" id="Mos-mJ-P8e">
                                 <rect key="frame" x="5" y="0.0" width="589" height="600"/>
                             </imageView>
                         </subviews>
@@ -33,10 +33,10 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="85" y="366"/>
         </scene>
     </scenes>
     <resources>
-        <image name="splash.png" width="480" height="640"/>
+        <image name="Splashscreen.png" width="1419" height="2177"/>
     </resources>
 </document>
