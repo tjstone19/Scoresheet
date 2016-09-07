@@ -12,7 +12,7 @@ import UIKit
 class Constants: NSObject {
     let GAME_ID_LENGTH: Int = 6
     
-    let ZOOM_FACTOR: CGFloat = 280.0
+    let ZOOM_FACTOR: CGFloat = 130.0
     
     let UPLOAD_URL: String = "http://stats.caha.timetoscore.com/submit-scoresheet.php"
     
