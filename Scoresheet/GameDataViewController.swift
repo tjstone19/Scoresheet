@@ -86,7 +86,7 @@ UITextViewDelegate {
         doneButton.addGestureRecognizer(
             UITapGestureRecognizer(target: self,
                 action:#selector(GameDataViewController.segueToGameIdView(_:))))
-        
+      /*
         self.nameTF.text = gameData.userName
         
         // Check for saved data
@@ -104,7 +104,7 @@ UITextViewDelegate {
         else {
             self.teamPicker.selectRow(self.teams.indexOf(gameData.teamDivision!)!,
                                       inComponent: 0, animated: true)
-        }
+        }*/
     }
     
     // Disables key board for user name text field

@@ -27,18 +27,18 @@ class ImageUploader: NSObject,
     var gameId: String
     
     // when upload is complete, cameraVc's seguetohomescreen method is called
-    var cameraVc: CameraViewController
+    var uploadVC: UploadViewController
     
     // Contains constant values for entire program
     let constants: Constants = Constants()
     
     
     // Initializes an ImageUploader object with the given parameters
-    init(cameraVC: CameraViewController, image: UIImage, game: String) {
+    init(uploadVC: UploadViewController, image: UIImage, game: String) {
         
         self.uploadPic = image
         self.gameId = game
-        self.cameraVc = cameraVC
+        self.uploadVC = uploadVC
         
         param.updateValue(self.gameId, forKey: "game_number")
         print(param)
@@ -66,7 +66,7 @@ class ImageUploader: NSObject,
         
         // Update camera view controller on the upload progress
         dispatch_async(dispatch_get_main_queue(),{
-            self.cameraVc.setUploadProgress(uploadProgress, percent: progressPercent)
+            self.uploadVC.setUploadProgress(uploadProgress, percent: progressPercent)
         });
     }
     
@@ -78,7 +78,7 @@ class ImageUploader: NSObject,
                     didCompleteWithError error: NSError?) {
         
         dispatch_async(dispatch_get_main_queue(),{
-            self.cameraVc.uploadError((error?.localizedDescription)!)
+            self.uploadVC.uploadFail((error?.localizedDescription)!)
         });
     }
     
@@ -143,12 +143,12 @@ class ImageUploader: NSObject,
             // Check if scoresheet was accepted
             if responseString!.containsString(self.constants.SCORESHEET_ACCEPTED) {
                 dispatch_async(dispatch_get_main_queue(),{
-                    self.cameraVc.uploadSuccess()
+                    self.uploadVC.uploadSuccess()
                 });
             }
             else {
                 dispatch_async(dispatch_get_main_queue(),{
-                    self.cameraVc.uploadError(self.constants.UPLOAD_FAIL_MESSAGE)
+                    self.uploadVC.uploadFail(self.constants.UPLOAD_FAIL_MESSAGE)
                 });
             }
         }
@@ -168,38 +168,6 @@ class ImageUploader: NSObject,
          789AI1
          789AJ1
         */
-       
-        
-       /* // Send http request
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
-            data, response, error in
-            
-            if error != nil {
-                print("error=\(error)")
-                return
-            }
-            
-            // You can print out response object
-            print("******* response = \(response)")
-            
-            // Print out reponse body
-            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            print("****** response data = \(responseString!)")
-            
-            
-            // Check if scoresheet was accepted
-            if responseString!.containsString(self.constants.SCORESHEET_ACCEPTED) {
-                dispatch_async(dispatch_get_main_queue(),{
-                    self.cameraVc.uploadSuccess()
-                });
-            }
-            else {
-                dispatch_async(dispatch_get_main_queue(),{
-                    self.cameraVc.uploadError(self.constants.UPLOAD_FAIL_MESSAGE)
-                });
-            }
-        }
-        task.resume()*/
     }
     
     // Creates the body of the HTTP request with |parameters| and the scoresheet image |imageDataKey|.

@@ -23,23 +23,18 @@ class CameraViewController: UIViewController {
     // back camera
     var backCamera : AVCaptureDevice?
     
-    // Retakes a picture when pressed
-    @IBOutlet weak var retakeButton: UIButton!
-    
-    // Sends the picture to the server when pressed
-    @IBOutlet weak var useButton: UIButton!
     
     // Transitions to GameIdViewController when pressed
     @IBOutlet weak var backButton: UIButton!
+    
+    // Takes a photo when pressed.
+    @IBOutlet weak var photoButton: UIButton!
     
     // Picture taken by the user
     var image: UIImage = UIImage()
     
     // Displays what the back camera "sees"
     var cameraPreview = UIView()
-    
-    // Calls show photo method when a tap is detected
-    var pictureGesture: UITapGestureRecognizer = UITapGestureRecognizer()
     
     // Used to access core data
     let managedObjectContext =
@@ -55,22 +50,6 @@ class CameraViewController: UIViewController {
     // Application constant values
     let constants: Constants = Constants()
     
-    // Image view that displays the photo to the user
-    var imageView: UIImageView!
-    
-    // Shows integer value of upload progress percentage
-    @IBOutlet weak var progressLabel: UILabel!
-    
-    // Indicator wheel displayed while the scoresheet photo is being uploaded
-    //@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
-    // Progress bar that displays the upload progress percentage
-    @IBOutlet weak var progressBar: UIProgressView!
-    
-    // Displays "Uploading Photo..." to the user while the scoresheet is being uploaded.
-    @IBOutlet weak var uploadPhotoLabel: UILabel!
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -84,55 +63,6 @@ class CameraViewController: UIViewController {
         gameData = fetchGameData()
     }
     
-    // Updates the progress bar and progress labels values.
-    func setUploadProgress(progress: Float, percent: Int) {
-        progressBar.progress = progress
-        progressLabel.text = "\(percent)%"
-    }
-    
-    // Called when an error was encountered while uploading the image.
-    // Presents error message to the user.
-    func uploadError(errorMessage: String) {
-        print(gameData.gameId)
-        
-        let alert = UIAlertController(title: "Failed to upload image",
-                                      message: "\(errorMessage)",
-                                      preferredStyle: UIAlertControllerStyle.Alert)
-        
-        alert.addAction(UIAlertAction(title: "OK",
-            style: UIAlertActionStyle.Default,
-            handler: self.messageRead(_:)))
-        
-        self.presentViewController(alert, animated: true,
-                                   completion: nil)
-    }
-    
-    // Called when an error was encountered while uploading the image.
-    // Presents error message to the user.
-    func uploadSuccess() {
-        let alert = UIAlertController(title: "Upload Complete",
-                                      message: "Scoresheet submitted for game \(gameData.gameId)",
-                                      preferredStyle: UIAlertControllerStyle.Alert)
-        
-        alert.addAction(UIAlertAction(title: "OK",
-            style: UIAlertActionStyle.Default,
-            handler: self.messageRead(_:)))
-        
-        self.presentViewController(alert, animated: true,
-                                   completion: nil)
-    }
-
-    
-    /****
-        *
-        * TODO: add pop up for successful upload
-        */
-    
-    // Transitions to home screen
-    func messageRead(alert: UIAlertAction) {
-        self.segueToHomeScreen()
-    }
-    
     // Retrieves the users name, club, and team from core data.
     func fetchGameData() -> GameData {
         let fetchRequest = NSFetchRequest(entityName: "GameData")
@@ -142,13 +72,28 @@ class CameraViewController: UIViewController {
             try fetchResults =
                 (managedObjectContext.executeFetchRequest(fetchRequest)
                     as? [GameData])!
-            //print(fetchResults)
         } catch {
-            print("ERROR: Unable to access core data in GameIDViewController")
+            print("ERROR: Unable to access core data in CameraViewController")
         }
         
         return fetchResults[0]
     }
+    
+    // Saves the image of the scoresheet to core data.
+    func saveData() {
+        let imageData: NSData = UIImageJPEGRepresentation(self.image, 1)!
+        
+        // Only one component in team picker so user component 0
+        gameData.setValue(imageData, forKey: "image")
+        
+        // Save GameData fields
+        do {
+            try gameData.managedObjectContext?.save()
+        } catch {
+            print(error)
+        }
+    }
+
     
     // Sets up the AVCaptureSession to take the picture.
     func setUpCaptureSession() {
@@ -180,94 +125,20 @@ class CameraViewController: UIViewController {
             UITapGestureRecognizer(target: self,
                 action:#selector(CameraViewController.backButtonPressed(_:))))
         
-        retakeButton.addGestureRecognizer(
-            UITapGestureRecognizer(target: self,
-                action:#selector(CameraViewController.retakeButtonPressed(_:))))
-        
-        useButton.addGestureRecognizer(
-            UITapGestureRecognizer(target: self,
-                action:#selector(CameraViewController.useButtonPressed(_:))))
-        
         // Convers entire view which allows users to tap screen anywhere to take a picture
-        self.pictureGesture =
+        photoButton.addGestureRecognizer(
             UITapGestureRecognizer(target: self,
-                                   action:#selector(CameraViewController.showPhoto(_:)))
-        
-        /*progressBar.hidden = true
-        progressLabel.hidden = true
-        progressLabel.enabled = false
-        uploadPhotoLabel.hidden = true
-        uploadPhotoLabel.enabled = false */
-        
-        
-        progressBar.progress = 0
-        progressLabel.text = "0%"
-        
-        toggleProgressVisibility()
-        toggleButtonVisibility()
+                action:#selector(CameraViewController.takePhoto(_:))))
     }
     
-    // Toggles progress bar, progress label, and uploading photo label visibility
-    func toggleProgressVisibility() {
-        progressBar.hidden = !progressBar.hidden
-        progressLabel.hidden = !progressLabel.hidden
-        progressLabel.enabled = !progressLabel.enabled
-        uploadPhotoLabel.hidden = !uploadPhotoLabel.hidden
-        uploadPhotoLabel.enabled = !uploadPhotoLabel.enabled
-    }
-    
-    // Toggles back button and ok button visibility
-    func toggleButtonVisibility() {
-        //backButton.hidden = !backButton.hidden
-        //backButton.enabled = !backButton.enabled
-        retakeButton.hidden = !retakeButton.hidden
-        retakeButton.enabled = !retakeButton.enabled
-        useButton.hidden = !useButton.hidden
-        useButton.enabled = !useButton.enabled
-    }
     
     // Initializes a GameDataViewController after a response from the server has been received
     func segueToHomeScreen() {
-        // Stop activity wheel
-        //self.activityIndicator.stopAnimating()
-        
-        // remove image view from super view
-        self.imageView.removeFromSuperview()
-        
         // Transition to GameIdViewController
         let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
         let vc = storyboard.instantiateViewControllerWithIdentifier(
             "GameIdViewController") as! GameIdViewController
         self.presentViewController(vc, animated: true, completion: nil)
-    }
-    
-    // Sends the photo to the server.
-    func useButtonPressed(sender: UITapGestureRecognizer) {
-        
-        // Remove image from main view
-        imageView.removeFromSuperview()
-        
-        // Remove camera view from main view
-        cameraPreview.removeFromSuperview()
-        
-        // Enable progress bar, progress label, and uploading photo label
-        toggleProgressVisibility()
-        
-        
-        let uploader = ImageUploader(cameraVC: self,
-                                     image: self.image,
-                                     game: gameData.gameId!)
-        
-        // end activity indicator
-        uploader.uploadImageToServer()
-        
-        
-        // IF fail
-            // display error message from server
-        // ELSE
-            // display message "Image uploaded successfully"
-        
-        //self.segueToHomeScreen()
     }
     
     // Removes input sources to captureSession
@@ -279,31 +150,10 @@ class CameraViewController: UIViewController {
         }
     }
     
-    // Reinitializes the capture session to take another picture
-    func retakeButtonPressed(sender: UITapGestureRecognizer) {
-        // Stop capture session and clear avcapture device inputs
-        self.captureSession.stopRunning()
-        self.clearAVCaptureDeviceInputs()
-        
-        // clear old image
-        self.imageView.image = nil
-        
-        // view did load will toggle progress bar and label back off
-        toggleProgressVisibility()
-        
-        // reload the view
-        self.viewDidLoad()
-    }
-    
     // Called when the back button is pressed.
     // Transitions back to the game id view controller.
     func backButtonPressed(sender: UITapGestureRecognizer) {
-    
-        // Transition to GameIdViewController
-        let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
-        let vc = storyboard.instantiateViewControllerWithIdentifier(
-            "GameIdViewController") as! GameIdViewController
-        self.presentViewController(vc, animated: true, completion: nil)
+        segueToHomeScreen()
     }
     
     // Sets the back cameras focus mode to "Locked"
@@ -376,27 +226,35 @@ class CameraViewController: UIViewController {
             
             cameraPreview.layer.addSublayer(previewLayer)
             
-            // Add gesture recognizer which takes a picture when 
-            // the user taps anywhere on the screen
-            cameraPreview.addGestureRecognizer(pictureGesture)
             
             // add back button to camera view
             cameraPreview.addSubview(backButton)
             
+            // add photo button to camera view
+            
+            photoButton.center = cameraPreview.center
+            
+            photoButton.frame = CGRect(x: cameraPreview.center.x,
+                                       y: cameraPreview.center.y,
+                                       width: photoButton.frame.width,
+                                       height: photoButton.frame.height)
+            
+            cameraPreview.addSubview(photoButton)
+           
+            
             // add the camera view onto the main view
             view.addSubview(cameraPreview)
             
-            // Add back button to the camera preview layer
-            cameraPreview.addSubview(backButton)
         }
     }
     
-    // Presents the picture to the user
-    func showPhoto(sender: UITapGestureRecognizer) {
-        // Prevent more pictures from being taken
-        self.cameraPreview.removeGestureRecognizer(pictureGesture)
+    
+    /* 
+       Called when the user taps the screen.
+       Takes a picture then transitions to the ImageViewController.
+     */
+    func takePhoto(sender: UITapGestureRecognizer) {
         
-        // Take picture
         if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
                 (imageDataSampleBuffer, error) -> Void in
@@ -407,34 +265,25 @@ class CameraViewController: UIViewController {
                 
                 // Initialize imageview with the jpeg image
                 self.image = UIImage(data: imageData)!
-                self.imageView = UIImageView(image: self.image)
                 
-                //imageView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width,
-                  //                       height: self.view.bounds.size.height)
+                // Save image to core data
+                self.saveData()
                 
-                let newOrigin: CGPoint = CGPoint(x: 0 - (self.constants.ZOOM_FACTOR / 2.0),
-                                                 y: 0 - (self.constants.ZOOM_FACTOR / 2.0))
-                
-                let newSize: CGSize = CGSize(width: self.view.bounds.width + self.constants.ZOOM_FACTOR ,
-                                             height: self.view.bounds.height + self.constants.ZOOM_FACTOR)
-                
-                self.imageView.frame = CGRect(origin: newOrigin, size: newSize) 
-                
-                
-                // add image view to superview
-                self.view.addSubview(self.imageView)
-                
-                // Add use and retake buttons to imageview
-                self.imageView.addSubview(self.useButton)
-                self.imageView.addSubview(self.retakeButton)
-                
-                // Make use and retake buttons visible
-                self.toggleButtonVisibility()
-                
-                // allows buttons to recieve tap notifications
-                self.imageView.userInteractionEnabled = true
+                // Transition to ImageViewController
+                self.segueToImageVC()
             }
         }
+    }
+    
+    /*
+     Initializes an ImageViewController
+     */
+    func segueToImageVC() {
+        // Transition to CameraViewController
+        let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
+        let vc = storyboard.instantiateViewControllerWithIdentifier(
+            "ImageViewController") as! ImageViewController
+        self.presentViewController(vc, animated: true, completion: nil)
     }
 }
 
