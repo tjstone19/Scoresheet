@@ -21,7 +21,7 @@ class UploadViewController: UIViewController {
     
     // Used to access core data.
     let managedObjectContext =
-        (UIApplication.sharedApplication().delegate
+        (UIApplication.shared.delegate
             as! AppDelegate).managedObjectContext
     
     // Contains GameData Object stored in core data.
@@ -67,24 +67,24 @@ class UploadViewController: UIViewController {
                 action:#selector(UploadViewController.doneButtonPressed(_:))))
         
         // hide buttons during image upload
-        resendButton.hidden = true
-        resendButton.enabled = false
-        doneButton.hidden = true
-        doneButton.enabled = false
+        resendButton.isHidden = true
+        resendButton.isEnabled = false
+        doneButton.isHidden = true
+        doneButton.isEnabled = false
         
-        resultLabel.hidden = true
-        resultLabel.enabled = false
+        resultLabel.isHidden = true
+        resultLabel.isEnabled = false
         
         // display progress bar and label during image upload
-        progressLabel.hidden = false
-        progressLabel.enabled = true
-        progressBar.hidden = false
+        progressLabel.isHidden = false
+        progressLabel.isEnabled = true
+        progressBar.isHidden = false
     }
     
     /* 
         Attempts to upload the image after an unsuccessful attempt.
      */
-    func resendButtonPressed(sender: UITapGestureRecognizer) {
+    func resendButtonPressed(_ sender: UITapGestureRecognizer) {
         setUpUI()
         startUpload()
     }
@@ -92,7 +92,7 @@ class UploadViewController: UIViewController {
     /*
         Transitions to home screen (GameIdViewController).
      */
-    func doneButtonPressed(sender: UITapGestureRecognizer) {
+    func doneButtonPressed(_ sender: UITapGestureRecognizer) {
         segueToHomeScreen()
     }
     
@@ -106,7 +106,7 @@ class UploadViewController: UIViewController {
         // check if the game data object contains an image
         if gameData.image != nil {
             // Get the image from the GameData Object
-            image = UIImage(data: gameData.image!, scale:1.0)!
+            image = UIImage(data: gameData.image! as Data, scale:1.0)!
             
             uploader = ImageUploader(uploadVC: self,
                                      image: image,
@@ -123,13 +123,13 @@ class UploadViewController: UIViewController {
     
     // Retrieves the users name, club, and team from core data.
     func fetchGameData() -> GameData {
-        let fetchRequest = NSFetchRequest(entityName: "GameData")
+        let fetchRequest: NSFetchRequest<GameData> = NSFetchRequest(entityName: "GameData")
         
         // Request access to GameData object from core data
         do {
             try fetchResults =
-                (managedObjectContext.executeFetchRequest(fetchRequest)
-                    as? [GameData])!
+                (managedObjectContext.fetch(fetchRequest)
+                    as [GameData])
         } catch {
             print("ERROR: Unable to access core data in CameraViewController")
         }
@@ -143,15 +143,15 @@ class UploadViewController: UIViewController {
     func segueToHomeScreen() {
         // Transition to GameIdViewController
         let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
-        let vc = storyboard.instantiateViewControllerWithIdentifier(
-            "GameIdViewController") as! GameIdViewController
-        self.presentViewController(vc, animated: true, completion: nil)
+        let vc = storyboard.instantiateViewController(
+            withIdentifier: "GameIdViewController") as! GameIdViewController
+        self.present(vc, animated: true, completion: nil)
     }
     
     /* 
        Updates the progress bar and progress labels values.
      */
-    func setUploadProgress(progress: Float, percent: Int) {
+    func setUploadProgress(_ progress: Float, percent: Int) {
         progressBar.progress = progress
         progressLabel.text = "\(percent)%"
     }
@@ -160,20 +160,20 @@ class UploadViewController: UIViewController {
        Called when an error was encountered while uploading the image.
        Presents error message to the user.
     */
-    func uploadFail(errorMessage: String) {
+    func uploadFail(_ errorMessage: String) {
         sendingLabel.text = "UPLOAD ERROR"
         
         hideProgress()
         
         // show done and retake buttons
-        doneButton.enabled = true
-        doneButton.hidden = false
-        resendButton.enabled = true
-        resendButton.hidden = false
+        doneButton.isEnabled = true
+        doneButton.isHidden = false
+        resendButton.isEnabled = true
+        resendButton.isHidden = false
         
         // notify user of successful upload
-        resultLabel.hidden = false
-        resultLabel.enabled = true
+        resultLabel.isHidden = false
+        resultLabel.isEnabled = true
         resultLabel.text = errorMessage
     }
 
@@ -187,12 +187,12 @@ class UploadViewController: UIViewController {
         hideProgress()
         
         // only show done button since the upload was successful
-        doneButton.enabled = true
-        doneButton.hidden = false
+        doneButton.isEnabled = true
+        doneButton.isHidden = false
         
         // notify user of successful upload
-        resultLabel.hidden = false
-        resultLabel.enabled = true
+        resultLabel.isHidden = false
+        resultLabel.isEnabled = true
         resultLabel.text = constants.UPLOAD_SUCCESS
     }
     
@@ -201,8 +201,8 @@ class UploadViewController: UIViewController {
      */
     func hideProgress() {
         // hide progress bar and label
-        progressLabel.hidden = true
-        progressLabel.enabled = false
-        progressBar.hidden = true
+        progressLabel.isHidden = true
+        progressLabel.isEnabled = false
+        progressBar.isHidden = true
     }
 }

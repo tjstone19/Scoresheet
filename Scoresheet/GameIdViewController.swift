@@ -9,6 +9,26 @@
 import Foundation
 import UIKit
 import CoreData
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class GameIdViewController: UIViewController, UITextViewDelegate {
     
@@ -22,7 +42,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     
     // Used to access core data
     let managedObjectContext =
-        (UIApplication.sharedApplication().delegate
+        (UIApplication.shared.delegate
             as! AppDelegate).managedObjectContext
     
     // Contains GameData Object stored in core data
@@ -48,14 +68,14 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     // If a GameData object is not already instanciated, a new GameData
     // object will be created
     func fetchGameData() -> GameData {
-        let fetchRequest = NSFetchRequest(entityName: "GameData")
+        let fetchRequest: NSFetchRequest<GameData> = NSFetchRequest(entityName: "GameData")
         var gameData: GameData
         
         // Request access to GameData object from core data
         do {
             try fetchResults =
-                (managedObjectContext.executeFetchRequest(fetchRequest)
-                    as? [GameData])!
+                (managedObjectContext.fetch(fetchRequest)
+                    as [GameData])
             //print(fetchResults)
         } catch {
             print("ERROR: Unable to access core data in GameIDViewController")
@@ -65,8 +85,8 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
         if (fetchResults.count == 0) {
             
             // Used to save the user's name, club name, and team division to core data
-            gameData = NSEntityDescription.insertNewObjectForEntityForName(
-                "GameData", inManagedObjectContext: managedObjectContext)
+            gameData = NSEntityDescription.insertNewObject(
+                forEntityName: "GameData", into: managedObjectContext)
                 as! GameData
         }
         else {
@@ -95,7 +115,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     // Initializes UI Objects
     func setUpUI() {
         idTF.addTarget(self, action: #selector(self.textFieldDidChange(_:)),
-                       forControlEvents: UIControlEvents.EditingChanged)
+                       for: UIControlEvents.editingChanged)
         
         cameraButton.addGestureRecognizer(
             UITapGestureRecognizer(target: self,
@@ -104,7 +124,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
         idTF.text = ""
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
         /*var ret: Bool = false
@@ -119,7 +139,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     }
     
     // Determines if the user typed in characters for the game ID.
-    func textFieldDidChange(textField: UITextField) {
+    @objc private func textFieldDidChange(_ textField: UITextField) {
         self.saveData()
         
         // Delete last character if it is grater than the allowed game ID length
@@ -130,7 +150,7 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
     
     // Called when the pictureButton is pressed.
     // Transitions to the CameraViewController if the user has entered a name.
-    func takePicture(sender: UITapGestureRecognizer) {
+    func takePicture(_ sender: UITapGestureRecognizer) {
         
         // Check that user entered text in game id text field
         if  idTF.text?.characters.count == self.constants.GAME_ID_LENGTH {
@@ -140,9 +160,9 @@ class GameIdViewController: UIViewController, UITextViewDelegate {
             
             // Transition to CameraViewController
             let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
-            let vc = storyboard.instantiateViewControllerWithIdentifier(
-                "CameraViewController") as! CameraViewController
-            self.presentViewController(vc, animated: true, completion: nil)
+            let vc = storyboard.instantiateViewController(
+                withIdentifier: "CameraViewController") as! CameraViewController
+            self.present(vc, animated: true, completion: nil)
         }
     }
 }

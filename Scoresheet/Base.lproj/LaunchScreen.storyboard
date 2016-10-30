@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -15,25 +15,23 @@
                         <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splashscreen.png" translatesAutoresizingMaskIntoConstraints="NO" id="Mos-mJ-P8e">
-                                <rect key="frame" x="5" y="0.0" width="589" height="600"/>
-                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splashscreen.png" translatesAutoresizingMaskIntoConstraints="NO" id="Mos-mJ-P8e"/>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Mos-mJ-P8e" firstAttribute="bottom" secondItem="xb3-aO-Qok" secondAttribute="top" id="F5g-eB-Uxb"/>
-                            <constraint firstItem="Mos-mJ-P8e" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="r5c-9m-JwA"/>
-                            <constraint firstItem="Mos-mJ-P8e" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-15" id="sdE-16-9nR"/>
-                            <constraint firstItem="Mos-mJ-P8e" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="vEH-Ac-SmN"/>
+                            <constraint firstAttribute="trailing" secondItem="Mos-mJ-P8e" secondAttribute="trailing" id="28t-7c-lM2"/>
+                            <constraint firstItem="Mos-mJ-P8e" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Z2L-o4-G3o"/>
+                            <constraint firstItem="Mos-mJ-P8e" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="kfN-Nq-zJ9"/>
+                            <constraint firstItem="Mos-mJ-P8e" firstAttribute="bottom" secondItem="xb3-aO-Qok" secondAttribute="top" id="vrR-dh-cza"/>
                         </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="85" y="366"/>
+            <point key="canvasLocation" x="128.80000000000001" y="147.97601199400302"/>
         </scene>
     </scenes>
     <resources>

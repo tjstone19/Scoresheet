@@ -22,7 +22,7 @@ class ImageViewController : UIViewController {
     
     // Used to access core data
     let managedObjectContext =
-        (UIApplication.sharedApplication().delegate
+        (UIApplication.shared.delegate
             as! AppDelegate).managedObjectContext
     
     // Contains GameData Object stored in core data
@@ -33,7 +33,7 @@ class ImageViewController : UIViewController {
     
     // Contains constant values.
     let constants: Constants = Constants()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -45,6 +45,8 @@ class ImageViewController : UIViewController {
         
         // set up ui buttons and the image view
         self.setUpUIButtons()
+        
+        
     }
     
     /*
@@ -61,7 +63,7 @@ class ImageViewController : UIViewController {
      */
     func setUpZoomView() {
         // Initialize the image view with the scoresheet image
-        imageView.image = UIImage(data: gameData.image!, scale:1.0)
+        imageView.image = UIImage(data: gameData.image! as Data, scale:0.5)
         
         // new origin for the image view
         let newOrigin: CGPoint = CGPoint(x: 0 - (self.constants.ZOOM_FACTOR / 2.0),
@@ -73,7 +75,6 @@ class ImageViewController : UIViewController {
         
         // set the dimensions of the image view
         self.imageView.frame = CGRect(origin: newOrigin, size: newSize)
-        
         
         // add image view to superview
         //self.view.addSubview(self.imageView)
@@ -96,13 +97,13 @@ class ImageViewController : UIViewController {
     
     // Retrieves the users name, club, and team from core data.
     func fetchGameData() -> GameData {
-        let fetchRequest = NSFetchRequest(entityName: "GameData")
+        let fetchRequest: NSFetchRequest<GameData> = NSFetchRequest(entityName: "GameData")
         
         // Request access to GameData object from core data
         do {
             try fetchResults =
-                (managedObjectContext.executeFetchRequest(fetchRequest)
-                    as? [GameData])!
+                (managedObjectContext.fetch(fetchRequest)
+                    as [GameData])
             //print(fetchResults)
         } catch {
             print("ERROR: Unable to access core data in GameIDViewController")
@@ -127,23 +128,23 @@ class ImageViewController : UIViewController {
     }
     
     // Reinitializes a CameraViewController to retake the photo
-    func retakeButtonPressed(sender: UITapGestureRecognizer) {
+    func retakeButtonPressed(_ sender: UITapGestureRecognizer) {
         // clear old image
         self.imageView.image = nil
         
         // Transition to CameraViewController
         let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
-        let vc = storyboard.instantiateViewControllerWithIdentifier(
-            "CameraViewController") as! CameraViewController
-        self.presentViewController(vc, animated: true, completion: nil)
+        let vc = storyboard.instantiateViewController(
+            withIdentifier: "CameraViewController") as! CameraViewController
+        self.present(vc, animated: true, completion: nil)
     }
     
     // Transitions to the UploadViewController to send the scoresheet image to the server.
-    func useButtonPressed(sender: UITapGestureRecognizer) {
+    func useButtonPressed(_ sender: UITapGestureRecognizer) {
         // Transition to UploadViewController
         let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
-        let vc = storyboard.instantiateViewControllerWithIdentifier(
-            "UploadViewController") as! UploadViewController
-        self.presentViewController(vc, animated: true, completion: nil)
+        let vc = storyboard.instantiateViewController(
+            withIdentifier: "UploadViewController") as! UploadViewController
+        self.present(vc, animated: true, completion: nil)
     }
 }

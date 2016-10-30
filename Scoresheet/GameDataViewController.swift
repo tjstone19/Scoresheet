@@ -9,6 +9,26 @@
 
 import UIKit
 import CoreData
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class GameDataViewController: UIViewController,
     UIPickerViewDataSource,
@@ -62,7 +82,7 @@ UITextViewDelegate {
     var selectedTeam: String = "Mite A"
     
     let managedObjectContext =
-        (UIApplication.sharedApplication().delegate
+        (UIApplication.shared.delegate
          as! AppDelegate).managedObjectContext
     
     // Contains GameData Object stored in core data
@@ -78,37 +98,17 @@ UITextViewDelegate {
     
     // Initializes any UI objects in the view.
     func setUpUI() {
-        let gameData: GameData = fetchGameData()
         
         nameTF.addTarget(self, action: #selector(self.textFieldDidChange(_:)),
-                         forControlEvents: UIControlEvents.EditingChanged)
+                         for: UIControlEvents.editingChanged)
         
         doneButton.addGestureRecognizer(
             UITapGestureRecognizer(target: self,
                 action:#selector(GameDataViewController.segueToGameIdView(_:))))
-      /*
-        self.nameTF.text = gameData.userName
-        
-        // Check for saved data
-        if (gameData.clubName == nil || gameData.clubName == "") {
-            self.clubPicker.selectRow(0, inComponent: 0, animated: true)
-        }
-        else {
-            self.clubPicker.selectRow(self.clubs.indexOf(gameData.clubName!)!,
-                                      inComponent: 0, animated: true)
-        }
-        
-        if (gameData.teamDivision == nil || gameData.teamDivision == "") {
-            self.teamPicker.selectRow(0, inComponent: 0, animated: true)
-        }
-        else {
-            self.teamPicker.selectRow(self.teams.indexOf(gameData.teamDivision!)!,
-                                      inComponent: 0, animated: true)
-        }*/
     }
     
     // Disables key board for user name text field
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
     }
@@ -117,7 +117,7 @@ UITextViewDelegate {
         super.didReceiveMemoryWarning()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
     }
     
@@ -125,14 +125,14 @@ UITextViewDelegate {
     // If a GameData object is not already instanciated, a new GameData
     // object will be created
     func fetchGameData() -> GameData {
-        let fetchRequest = NSFetchRequest(entityName: "GameData")
+        let fetchRequest: NSFetchRequest<GameData> = NSFetchRequest(entityName: "GameData")
         var gameData: GameData
         
         // Request access to GameData object from core data
         do {
             try fetchResults =
-                (managedObjectContext.executeFetchRequest(fetchRequest)
-                    as? [GameData])!
+                (managedObjectContext.fetch(fetchRequest)
+                    as [GameData])
             //print(fetchResults)
         } catch {
             print("ERROR: Unable to access core data in GameIDViewController")
@@ -142,8 +142,8 @@ UITextViewDelegate {
         if (fetchResults.count == 0) {
             
             // Used to save the user's name, club name, and team division to core data
-            gameData = NSEntityDescription.insertNewObjectForEntityForName(
-                "GameData", inManagedObjectContext: managedObjectContext)
+            gameData = NSEntityDescription.insertNewObject(
+                forEntityName: "GameData", into: managedObjectContext)
                 as! GameData
         }
         else {
@@ -164,11 +164,11 @@ UITextViewDelegate {
         gameData.setValue(self.nameTF.text, forKey: "userName")
         
         // Only one component in club picker so user component 0
-        gameData.setValue(self.clubs[self.clubPicker.selectedRowInComponent(0)],
+        gameData.setValue(self.clubs[self.clubPicker.selectedRow(inComponent: 0)],
                           forKey: "clubName")
         
         // Only one component in team picker so user component 0
-        gameData.setValue(self.teams[self.teamPicker.selectedRowInComponent(0)],
+        gameData.setValue(self.teams[self.teamPicker.selectedRow(inComponent: 0)],
                           forKey: "teamDivision")
         
         // Save GameData fields
@@ -181,7 +181,7 @@ UITextViewDelegate {
     
     // Called when the pictureButton is pressed.
     // Transitions to the CameraViewController if the user has entered a name.
-    func segueToGameIdView(sender: UITapGestureRecognizer) {
+    func segueToGameIdView(_ sender: UITapGestureRecognizer) {
         
         // Check that user entered text in name field
         if  nameTF.text?.characters.count > 0 {
@@ -191,19 +191,19 @@ UITextViewDelegate {
             
             // Transition to GameIdViewController
             let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
-            let vc = storyboard.instantiateViewControllerWithIdentifier(
-                     "GameIdViewController") as! GameIdViewController
-            self.presentViewController(vc, animated: true, completion: nil)
+            let vc = storyboard.instantiateViewController(
+                     withIdentifier: "GameIdViewController") as! GameIdViewController
+            self.present(vc, animated: true, completion: nil)
         }
     }
     
     // Determines if the user typed in characters for their name.
-    func textFieldDidChange(textField: UITextField) {
+    @objc private func textFieldDidChange(_ textField: UITextField) {
         // Check for text in name field
         if nameTF.text?.characters.count > 0 {
-            doneButton.enabled = true
-            doneButton.tintColor = UIColor.blueColor()
-            doneButton.backgroundColor = UIColor.lightGrayColor()
+            doneButton.isEnabled = true
+            doneButton.tintColor = UIColor.blue
+            doneButton.backgroundColor = UIColor.lightGray
             
             // Saves the user's name, club, and team to core data
             self.saveData()
@@ -211,23 +211,23 @@ UITextViewDelegate {
         }
         else {
             // Disable button
-            doneButton.enabled = false
-            doneButton.tintColor = UIColor.blackColor()
-            doneButton.backgroundColor = UIColor.redColor()
+            doneButton.isEnabled = false
+            doneButton.tintColor = UIColor.black
+            doneButton.backgroundColor = UIColor.red
             
             let alert = UIAlertController(title: "Error",
                                           message: "Enter a name",
-                                          preferredStyle: UIAlertControllerStyle.Alert)
+                                          preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK",
-                                          style: UIAlertActionStyle.Default,
+                                          style: UIAlertActionStyle.default,
                                           handler: nil))
-            self.presentViewController(alert, animated: true,
+            self.present(alert, animated: true,
                                        completion: nil)
         }
     }
     
     // Sets the selected club or team for the corresponding UIPickerView
-    func pickerView(pickerView: UIPickerView,
+    func pickerView(_ pickerView: UIPickerView,
                     didSelectRow row: Int,
                     inComponent component: Int) {
         
@@ -247,7 +247,7 @@ UITextViewDelegate {
     }
     
     // Determines the number of rows in the UIPickerView (pickerView)
-    func pickerView(pickerView: UIPickerView,
+    func pickerView(_ pickerView: UIPickerView,
                     numberOfRowsInComponent component: Int) -> Int {
         
         // Club picker: number of elements in club array
@@ -265,13 +265,13 @@ UITextViewDelegate {
     
     // Determines number of seperate columns in the UIPickerView (pickerView).
     // We just need 1 column for both picker views.
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
     // Determines the text content for the given row (row) in the
     // UIPickerView (pickerView)
-    func pickerView(pickerView: UIPickerView,
+    func pickerView(_ pickerView: UIPickerView,
                     titleForRow row: Int,
                     forComponent component: Int) -> String? {
         

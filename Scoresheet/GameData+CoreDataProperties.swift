@@ -15,6 +15,6 @@ import CoreData
 extension GameData {
 
     @NSManaged var gameId: String?
-    @NSManaged var image: NSData?
+    @NSManaged var image: Data?
 
 }

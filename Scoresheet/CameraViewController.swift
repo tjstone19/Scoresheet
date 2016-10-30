@@ -38,7 +38,7 @@ class CameraViewController: UIViewController {
     
     // Used to access core data
     let managedObjectContext =
-        (UIApplication.sharedApplication().delegate
+        (UIApplication.shared.delegate
             as! AppDelegate).managedObjectContext
     
     // Contains GameData Object stored in core data
@@ -65,13 +65,13 @@ class CameraViewController: UIViewController {
     
     // Retrieves the users name, club, and team from core data.
     func fetchGameData() -> GameData {
-        let fetchRequest = NSFetchRequest(entityName: "GameData")
+        let fetchRequest: NSFetchRequest<GameData> = NSFetchRequest(entityName: "GameData")
         
         // Request access to GameData object from core data
         do {
             try fetchResults =
-                (managedObjectContext.executeFetchRequest(fetchRequest)
-                    as? [GameData])!
+                (managedObjectContext.fetch(fetchRequest)
+                    as [GameData])
         } catch {
             print("ERROR: Unable to access core data in CameraViewController")
         }
@@ -81,7 +81,7 @@ class CameraViewController: UIViewController {
     
     // Saves the image of the scoresheet to core data.
     func saveData() {
-        let imageData: NSData = UIImageJPEGRepresentation(self.image, 1)!
+        let imageData: Data = UIImageJPEGRepresentation(self.image, 1)!
         
         // Only one component in team picker so user component 0
         gameData.setValue(imageData, forKey: "image")
@@ -103,11 +103,11 @@ class CameraViewController: UIViewController {
         let devices = AVCaptureDevice.devices()
         
         // Loop through all the capture devices on this phone
-        for device in devices {
+        for device in devices! {
             // Make sure this particular device supports video
-            if (device.hasMediaType(AVMediaTypeVideo)) {
+            if ((device as AnyObject).hasMediaType(AVMediaTypeVideo)) {
                 // Finally check the position and confirm we've got the back camera
-                if(device.position == AVCaptureDevicePosition.Back) {
+                if((device as AnyObject).position == AVCaptureDevicePosition.back) {
                     backCamera = device as? AVCaptureDevice
                     if backCamera != nil {
                         print("Capture device found")
@@ -136,9 +136,9 @@ class CameraViewController: UIViewController {
     func segueToHomeScreen() {
         // Transition to GameIdViewController
         let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
-        let vc = storyboard.instantiateViewControllerWithIdentifier(
-            "GameIdViewController") as! GameIdViewController
-        self.presentViewController(vc, animated: true, completion: nil)
+        let vc = storyboard.instantiateViewController(
+            withIdentifier: "GameIdViewController") as! GameIdViewController
+        self.present(vc, animated: true, completion: nil)
     }
     
     // Removes input sources to captureSession
@@ -152,7 +152,7 @@ class CameraViewController: UIViewController {
     
     // Called when the back button is pressed.
     // Transitions back to the game id view controller.
-    func backButtonPressed(sender: UITapGestureRecognizer) {
+    func backButtonPressed(_ sender: UITapGestureRecognizer) {
         segueToHomeScreen()
     }
     
@@ -164,7 +164,7 @@ class CameraViewController: UIViewController {
             
             // Set focus mode to continously focus on the content in the center of the camera
             let focusMode:AVCaptureFocusMode =
-                AVCaptureFocusMode.ContinuousAutoFocus
+                AVCaptureFocusMode.continuousAutoFocus
             
             // Lock back camera for configuration
             // (Must have lock on the camera before you can alter the focus mode)
@@ -217,12 +217,12 @@ class CameraViewController: UIViewController {
         // initialize the AVCapturePreviewLayer to display what the back camera "sees"
         if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
             previewLayer.bounds = view.bounds
-            previewLayer.position = CGPointMake(view.bounds.midX, view.bounds.midY)
+            previewLayer.position = CGPoint(x: view.bounds.midX, y: view.bounds.midY)
             previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
             
             cameraPreview = UIView(
-                frame: CGRectMake(0.0, 0.0, view.bounds.size.width,
-                    view.bounds.size.height))
+                frame: CGRect(x: 0.0, y: 0.0, width: view.bounds.size.width,
+                    height: view.bounds.size.height))
             
             cameraPreview.layer.addSublayer(previewLayer)
             
@@ -253,10 +253,10 @@ class CameraViewController: UIViewController {
        Called when the user taps the screen.
        Takes a picture then transitions to the ImageViewController.
      */
-    func takePhoto(sender: UITapGestureRecognizer) {
+    func takePhoto(_ sender: UITapGestureRecognizer) {
         
-        if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
-            stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
+        if let videoConnection = stillImageOutput.connection(withMediaType: AVMediaTypeVideo) {
+            stillImageOutput.captureStillImageAsynchronously(from: videoConnection) {
                 (imageDataSampleBuffer, error) -> Void in
                 
                 // Convert image to jpeg
@@ -264,7 +264,7 @@ class CameraViewController: UIViewController {
                     AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
                 
                 // Initialize imageview with the jpeg image
-                self.image = UIImage(data: imageData)!
+                self.image = UIImage(data: imageData!)!
                 
                 // Save image to core data
                 self.saveData()
@@ -281,9 +281,9 @@ class CameraViewController: UIViewController {
     func segueToImageVC() {
         // Transition to CameraViewController
         let storyboard = UIStoryboard(name: "MainStory", bundle: nil)
-        let vc = storyboard.instantiateViewControllerWithIdentifier(
-            "ImageViewController") as! ImageViewController
-        self.presentViewController(vc, animated: true, completion: nil)
+        let vc = storyboard.instantiateViewController(
+            withIdentifier: "ImageViewController") as! ImageViewController
+        self.present(vc, animated: true, completion: nil)
     }
 }
 
